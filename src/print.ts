@@ -12,7 +12,7 @@ import {
 import { format } from "./format";
 
 type Relation = {
-  name?: string;
+  name?: string | null;
   fields?: string[];
   references?: string[];
 };
@@ -70,9 +70,13 @@ function printScalarField(field: ScalarField): string {
 
 function printObjectField(field: ObjectField): string {
   const relation: Relation = {};
-  if (field.relationToFields) {
+  if (field.relationName) {
     relation.name = field.relationName;
+  }
+  if (field.relationToFields.length) {
     relation.fields = field.relationToFields;
+  }
+  if (field.relationToReferences.length) {
     relation.references = field.relationToReferences;
   }
   const attributes: string[] = [];

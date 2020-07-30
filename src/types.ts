@@ -67,7 +67,7 @@ export type ScalarField = BaseField & {
 export type ObjectField = BaseField & {
   kind: FieldKind.Object;
   type: string;
-  relationName: string;
+  relationName: string | null;
   relationToFields: string[];
   relationToReferences: string[];
   relationOnDelete: "NONE";

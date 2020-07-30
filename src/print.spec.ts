@@ -38,6 +38,26 @@ model Order {
   id String
 }`,
     ],
+    [
+      "Two models with reference",
+      createSchema([
+        createModel("User", [
+          createScalarField("id", ScalarType.String, false, true),
+          createObjectField("orders", "Order", true, true),
+        ]),
+        createModel("Order", [
+          createScalarField("id", ScalarType.String, false, true),
+        ]),
+      ]),
+      `model User {
+  id     String
+  orders Order[]
+}
+
+model Order {
+  id String
+}`,
+    ],
   ];
   test.each(cases)("print(%s)", async (name, schema, expected) => {
     expect(await print(schema)).toBe(expected);
