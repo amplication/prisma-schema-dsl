@@ -5,7 +5,9 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "test": "jest"
+    "test": "jest",
+    "format": "prettier --write src",
+    "check-format": "prettier --check src"
   },
   "keywords": [
     "prisma",
@@ -28,6 +30,7 @@
   "devDependencies": {
     "@types/jest": "^26.0.7",
     "jest": "^26.2.0",
+    "prettier": "^2.0.5",
     "ts-jest": "^26.1.4"
   },
   "jest": {
