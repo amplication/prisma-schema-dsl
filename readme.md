@@ -2,6 +2,12 @@
 
 JavaScript interface for Prisma Schema DSL
 
+## Installation
+
+```
+npm install prisma-schema-dsl
+```
+
 ## API
 
 ### Print
