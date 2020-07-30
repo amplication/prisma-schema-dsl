@@ -2,8 +2,8 @@ import { createSchema, createModel, createScalarField } from "./builders";
 import { print } from "./print";
 import { ScalarType } from "./types";
 
-test("Print simple model", () => {
-  const schema = print(
+test("Print simple model", async () => {
+  const schema = await print(
     createSchema([
       createModel("User", [
         createScalarField("id", ScalarType.String, false, true),
@@ -11,12 +11,12 @@ test("Print simple model", () => {
     ])
   );
   expect(schema).toBe(`model User {
-id String
+  id String
 }`);
 });
 
-test("Print two models", () => {
-  const schema = print(
+test("Print two models", async () => {
+  const schema = await print(
     createSchema([
       createModel("User", [
         createScalarField("id", ScalarType.String, false, true),
@@ -27,9 +27,10 @@ test("Print two models", () => {
     ])
   );
   expect(schema).toBe(`model User {
-id String
+  id String
 }
+
 model Order {
-id String
+  id String
 }`);
 });

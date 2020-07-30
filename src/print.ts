@@ -9,6 +9,7 @@ import {
   FieldKind,
   BaseField,
 } from "./types";
+import { format } from "./format";
 
 type Relation = {
   name?: string;
@@ -16,13 +17,14 @@ type Relation = {
   references?: string[];
 };
 
-export function print(schema: Schema): string {
+export async function print(schema: Schema): Promise<string> {
   const statements = [];
   if (schema.dataSource) {
     statements.push(printDataSource(schema.dataSource));
   }
   statements.push(schema.models.map(printModel).join("\n"));
-  return statements.join("\n");
+  const schemaText = statements.join("\n");
+  return format(schemaText);
 }
 
 function printDataSource(dataSource: DataSource): string {
