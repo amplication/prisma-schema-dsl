@@ -1,6 +1,8 @@
 ![Node.js CI](https://github.com/amplication/prisma-schema-dsl/workflows/Node.js%20CI/badge.svg)
 
-![Prisma Schema DSL](./assets/hero.png)
+<p align="center">
+    <img height="120" src="./assets/hero.png" alt="Prisma Schema DSL" />
+</p>
 
 JavaScript interface for [Prisma Schema DSL](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-schema)
 
