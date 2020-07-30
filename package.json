@@ -1,0 +1,40 @@
+{
+  "name": "prisma-schema-dsl",
+  "version": "1.0.0",
+  "description": "JavaScript interface for Prisma Schema DSL",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest"
+  },
+  "keywords": [
+    "prisma",
+    "schema",
+    "dsl",
+    "javascript",
+    "ast",
+    "generator"
+  ],
+  "author": {
+    "name": "Iddan Aaronsohn",
+    "email": "iddan@amplication.com"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@types/lodash.isempty": "^4.4.6",
+    "lodash.isempty": "^4.4.0",
+    "typescript": "^3.9.7"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.7",
+    "jest": "^26.2.0",
+    "ts-jest": "^26.1.4"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "modulePathIgnorePatterns": [
+      "dist"
+    ]
+  }
+}
