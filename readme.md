@@ -20,7 +20,7 @@ Creates a schema AST from given model and data source objects.
 
 - Clone the repository `git clone git@github.com:amplication/prisma-schema-dsl.git`
 - Install the dependencies `npm install`
-- Runt tests `npm test`
+- Run tests `npm test`
 
 ---
 
