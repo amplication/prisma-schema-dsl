@@ -1,6 +1,6 @@
 {
   "name": "prisma-schema-dsl",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "JavaScript interface for Prisma Schema DSL",
   "main": "dist/index.js",
   "scripts": {
