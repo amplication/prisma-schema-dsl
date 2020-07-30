@@ -1,3 +1,3 @@
 export * from "./builders";
 export * from "./types";
-export * from "./print";
+export { print } from "./print";

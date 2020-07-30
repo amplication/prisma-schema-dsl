@@ -27,7 +27,7 @@ export async function print(schema: Schema): Promise<string> {
   return format(schemaText);
 }
 
-function printDataSource(dataSource: DataSource): string {
+export function printDataSource(dataSource: DataSource): string {
   const url = printDataSourceURL(dataSource.url);
   return `datasource ${dataSource.name} {
   provider = "${dataSource.provider}"
@@ -39,12 +39,12 @@ function printDataSourceURL(url: string | DataSourceURLEnv): string {
   return url instanceof DataSourceURLEnv ? `env("${url.name}")` : `"${url}"`;
 }
 
-function printModel(model: Model): string {
+export function printModel(model: Model): string {
   const fieldTexts = model.fields.map(printField).join("\n");
   return `model ${model.name} {\n${fieldTexts}\n}`;
 }
 
-function printField(field: ObjectField | ScalarField) {
+export function printField(field: ObjectField | ScalarField) {
   return field.kind === FieldKind.Scalar
     ? printScalarField(field)
     : printObjectField(field);
