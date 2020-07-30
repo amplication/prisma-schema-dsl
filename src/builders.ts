@@ -55,14 +55,14 @@ export function createScalarField(
 
 export function createObjectField(
   name: string,
-  isList: boolean,
-  isRequired: boolean,
-  isGenerated: boolean,
   type: string,
-  relationName: string,
-  relationToFields: string[],
-  relationToReferences: string[],
-  relationOnDelete: "NONE"
+  isList: boolean = false,
+  isRequired: boolean = false,
+  isGenerated: boolean = false,
+  relationName: string | null = null,
+  relationToFields: string[] = [],
+  relationToReferences: string[] = [],
+  relationOnDelete: "NONE" = "NONE"
 ): ObjectField {
   validateFieldName(name);
   return {
