@@ -1,6 +1,6 @@
 # Prisma Schema DSL
 
-JavaScript interface for Prisma Schema DSL
+JavaScript interface for [Prisma Schema DSL](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-schema)
 
 ## Installation
 
