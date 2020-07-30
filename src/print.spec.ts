@@ -1,36 +1,45 @@
-import { createSchema, createModel, createScalarField } from "./builders";
+import {
+  createSchema,
+  createModel,
+  createScalarField,
+  createObjectField,
+} from "./builders";
 import { print } from "./print";
-import { ScalarType } from "./types";
+import { ScalarType, Schema } from "./types";
 
-test("Print simple model", async () => {
-  const schema = await print(
-    createSchema([
-      createModel("User", [
-        createScalarField("id", ScalarType.String, false, true),
+describe("print", () => {
+  const cases: Array<[string, Schema, string]> = [
+    [
+      "Simple model",
+      createSchema([
+        createModel("User", [
+          createScalarField("id", ScalarType.String, false, true),
+        ]),
       ]),
-    ])
-  );
-  expect(schema).toBe(`model User {
+      `model User {
   id String
-}`);
-});
-
-test("Print two models", async () => {
-  const schema = await print(
-    createSchema([
-      createModel("User", [
-        createScalarField("id", ScalarType.String, false, true),
+}`,
+    ],
+    [
+      "Two models",
+      createSchema([
+        createModel("User", [
+          createScalarField("id", ScalarType.String, false, true),
+        ]),
+        createModel("Order", [
+          createScalarField("id", ScalarType.String, false, true),
+        ]),
       ]),
-      createModel("Order", [
-        createScalarField("id", ScalarType.String, false, true),
-      ]),
-    ])
-  );
-  expect(schema).toBe(`model User {
+      `model User {
   id String
 }
 
 model Order {
   id String
-}`);
+}`,
+    ],
+  ];
+  test.each(cases)("print(%s)", async (name, schema, expected) => {
+    expect(await print(schema)).toBe(expected);
+  });
 });
