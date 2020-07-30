@@ -10,8 +10,9 @@ import {
   DataSourceURLEnv,
 } from "./types";
 
-const FIELD_NAME_REGEXP = /[A-Za-z][A-Za-z0-9_]*/;
+const NAME_REGEXP = /[A-Za-z][A-Za-z0-9_]*/;
 
+/** Creates a schema AST object */
 export function createSchema(models: Model[], dataSource?: DataSource): Schema {
   return {
     dataSource,
@@ -19,16 +20,22 @@ export function createSchema(models: Model[], dataSource?: DataSource): Schema {
   };
 }
 
+/** Creates a model AST object */
 export function createModel(
   name: string,
   fields: Array<ScalarField | ObjectField>
 ): Model {
+  validateName(name);
   return {
     name,
     fields,
   };
 }
 
+/**
+ * Creates a scalar field AST object
+ * Validates given name argument
+ */
 export function createScalarField(
   name: string,
   type: ScalarType,
@@ -39,7 +46,7 @@ export function createScalarField(
   isId: boolean = false,
   isUpdatedAt: boolean = false
 ): ScalarField {
-  validateFieldName(name);
+  validateName(name);
   return {
     name,
     isList,
@@ -53,6 +60,10 @@ export function createScalarField(
   };
 }
 
+/**
+ * Creates an object field AST object
+ * Validates given name argument
+ */
 export function createObjectField(
   name: string,
   type: string,
@@ -64,7 +75,7 @@ export function createObjectField(
   relationToReferences: string[] = [],
   relationOnDelete: "NONE" = "NONE"
 ): ObjectField {
-  validateFieldName(name);
+  validateName(name);
   return {
     name,
     isList,
@@ -79,12 +90,15 @@ export function createObjectField(
   };
 }
 
-function validateFieldName(name: string): void {
-  if (!name.match(FIELD_NAME_REGEXP)) {
-    throw new Error("Invalid field name");
+function validateName(name: string): void {
+  if (!name.match(NAME_REGEXP)) {
+    throw new Error(
+      `Invalid name: "${name}". Name must start with a letter and can contain only letters, numbers and underscores`
+    );
   }
 }
 
+/** Creates a data source AST object */
 export function createDataSource(
   name: string,
   provider: DataSourceProvider,

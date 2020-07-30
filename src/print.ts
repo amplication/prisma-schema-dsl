@@ -17,6 +17,12 @@ type Relation = {
   references?: string[];
 };
 
+/**
+ * Prints Prisma schema code from AST representation.
+ * The code is formatted using prisma-format.
+ * @param schema the Prisma schema AST
+ * @returns code of the Prisma schema
+ */
 export async function print(schema: Schema): Promise<string> {
   const statements = [];
   if (schema.dataSource) {
@@ -27,6 +33,12 @@ export async function print(schema: Schema): Promise<string> {
   return format(schemaText);
 }
 
+/**
+ * Prints data source code from AST representation.
+ * Note: the code is not formatted.
+ * @param schema the data source AST
+ * @returns code of the data source
+ */
 export function printDataSource(dataSource: DataSource): string {
   const url = printDataSourceURL(dataSource.url);
   return `datasource ${dataSource.name} {
@@ -39,11 +51,23 @@ function printDataSourceURL(url: string | DataSourceURLEnv): string {
   return url instanceof DataSourceURLEnv ? `env("${url.name}")` : `"${url}"`;
 }
 
+/**
+ * Prints model code from AST representation.
+ * Note: the code is not formatted.
+ * @param schema the model AST
+ * @returns code of the model
+ */
 export function printModel(model: Model): string {
   const fieldTexts = model.fields.map(printField).join("\n");
   return `model ${model.name} {\n${fieldTexts}\n}`;
 }
 
+/**
+ * Prints model field code from AST representation.
+ * Note: the code is not formatted.
+ * @param schema the field AST
+ * @returns code of the field
+ */
 export function printField(field: ObjectField | ScalarField) {
   return field.kind === FieldKind.Scalar
     ? printScalarField(field)

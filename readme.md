@@ -23,7 +23,26 @@ The schema is formatted using prisma-format.
 
 #### `createSchema(models: Model[], dataSource?: DataSource): Schema`
 
-Creates a schema AST from given model and data source objects.
+Creates a schema AST object
+
+#### `createModel(name: string, fields: Array<ScalarField | ObjectField>): Model`
+
+- Creates a model AST object
+- Validates given name argument
+
+#### `createScalarField(name: string, type: ScalarType, isList: boolean = false, isRequired: boolean = false, isUnique: boolean = false, isGenerated: boolean = false, isId: boolean = false, isUpdatedAt: boolean = false): ScalarField`
+
+- Creates a scalar field AST object
+- Validates given name argument
+
+#### `createObjectField(name: string, type: string, isList: boolean = false, isRequired: boolean = false, isGenerated: boolean = false, relationName: string | null = null, relationToFields: string[] = [], relationToReferences: string[] = [], relationOnDelete: "NONE" = "NONE"): ObjectField`
+
+- Creates an object field AST object
+- Validates given name argument
+
+#### `createDataSource(name: string, provider: DataSourceProvider, url: string | DataSourceURLEnv): DataSource`
+
+Creates a data source AST object
 
 ## Development
 
