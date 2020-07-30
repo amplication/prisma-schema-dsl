@@ -12,9 +12,10 @@ npm install prisma-schema-dsl
 
 ### Print
 
-#### `print(schema: Schema): string`
+#### `print(schema: Schema): Promise<string>`
 
-Prints Prisma schema file from AST
+Prints Prisma schema file from AST.
+The schema is formatted using prisma-format.
 
 ### Builders
 
