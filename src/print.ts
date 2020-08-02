@@ -8,6 +8,7 @@ import {
   ScalarField,
   FieldKind,
   BaseField,
+  Generator,
 } from "./types";
 import { format } from "./format";
 
@@ -28,7 +29,10 @@ export async function print(schema: Schema): Promise<string> {
   if (schema.dataSource) {
     statements.push(printDataSource(schema.dataSource));
   }
-  statements.push(schema.models.map(printModel).join("\n"));
+  if (schema.generators.length) {
+    statements.push(...schema.generators.map(printGenerator));
+  }
+  statements.push(...schema.models.map(printModel));
   const schemaText = statements.join("\n");
   return format(schemaText);
 }
@@ -49,6 +53,19 @@ export function printDataSource(dataSource: DataSource): string {
 
 function printDataSourceURL(url: string | DataSourceURLEnv): string {
   return url instanceof DataSourceURLEnv ? `env("${url.name}")` : `"${url}"`;
+}
+
+export function printGenerator(generator: Generator): string {
+  const fields = [`provider = "${generator.provider}"`];
+  if (generator.output) {
+    fields.push(`output = "${generator.output}"`);
+  }
+  if (generator.binaryTargets.length) {
+    fields.push(`binaryTargets = ${JSON.stringify(generator.binaryTargets)}`);
+  }
+  return `generator ${generator.name} {
+  ${fields.join("\n  ")}
+}`;
 }
 
 /**

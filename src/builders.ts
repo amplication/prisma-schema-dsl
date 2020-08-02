@@ -8,14 +8,20 @@ import {
   FieldKind,
   DataSourceProvider,
   DataSourceURLEnv,
+  Generator,
 } from "./types";
 
 const NAME_REGEXP = /[A-Za-z][A-Za-z0-9_]*/;
 
 /** Creates a schema AST object */
-export function createSchema(models: Model[], dataSource?: DataSource): Schema {
+export function createSchema(
+  models: Model[],
+  dataSource?: DataSource,
+  generators: Generator[] = []
+): Schema {
   return {
     dataSource,
+    generators,
     models,
   };
 }
@@ -108,5 +114,20 @@ export function createDataSource(
     name,
     provider,
     url,
+  };
+}
+
+/** Creates a generator AST object */
+export function createGenerator(
+  name: string,
+  provider: string,
+  output: string | null = null,
+  binaryTargets: string[] = []
+): Generator {
+  return {
+    name,
+    provider,
+    output,
+    binaryTargets,
   };
 }

@@ -26,6 +26,18 @@ export type DataSource = {
 };
 
 /**
+ * Prisma's Schema generator
+ * @see https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-schema/generators
+ */
+export type Generator = {
+  name: string;
+  provider: string;
+  output: string | null;
+  /** @see https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-schema/generators#binary-targets */
+  binaryTargets: string[];
+};
+
+/**
  * Prisma's data model scalar types
  * @see https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-schema/data-model#scalar-types
  */
@@ -81,4 +93,5 @@ export type Model = {
 export type Schema = {
   models: Model[];
   dataSource?: DataSource;
+  generators: Generator[];
 };

@@ -4,8 +4,9 @@ import {
   createScalarField,
   createObjectField,
   createDataSource,
+  createGenerator,
 } from "./builders";
-import { print, printField, printModel } from "./print";
+import { print, printField, printModel, printGenerator } from "./print";
 import {
   ScalarType,
   Schema,
@@ -13,6 +14,7 @@ import {
   ScalarField,
   DataSourceProvider,
   Model,
+  Generator,
 } from "./types";
 
 const EXAMPLE_FIELD_NAME = "exampleFieldName";
@@ -23,6 +25,10 @@ const EXAMPLE_STRING_FIELD = createScalarField(
   true
 );
 const EXAMPLE_MODEL = createModel("User", [EXAMPLE_STRING_FIELD]);
+const EXAMPLE_GENERATOR_NAME = "exampleGeneratorName";
+const EXAMPLE_GENERATOR_PROVIDER = "exampleGeneratorProvider";
+const EXAMPLE_GENERATOR_OUTPUT = "example-generator-output";
+const EXAMPLE_BINARY_TARGET = "example-binary-target";
 
 describe("printField", () => {
   const exampleObjectName = "ExampleObjectName";
@@ -88,7 +94,45 @@ ${printField(exampleOtherField)}
   });
 });
 
-describe("printField", () => {});
+describe("printGenerator", () => {
+  const cases: Array<[string, Generator, string]> = [
+    [
+      "Name and provider only",
+      createGenerator(EXAMPLE_GENERATOR_NAME, EXAMPLE_GENERATOR_PROVIDER),
+      `generator ${EXAMPLE_GENERATOR_NAME} {
+  provider = "${EXAMPLE_GENERATOR_PROVIDER}"
+}`,
+    ],
+    [
+      "With output",
+      createGenerator(
+        EXAMPLE_GENERATOR_NAME,
+        EXAMPLE_GENERATOR_PROVIDER,
+        EXAMPLE_GENERATOR_OUTPUT
+      ),
+      `generator ${EXAMPLE_GENERATOR_NAME} {
+  provider = "${EXAMPLE_GENERATOR_PROVIDER}"
+  output = "${EXAMPLE_GENERATOR_OUTPUT}"
+}`,
+    ],
+    [
+      "With binary targets",
+      createGenerator(
+        EXAMPLE_GENERATOR_NAME,
+        EXAMPLE_GENERATOR_PROVIDER,
+        null,
+        [EXAMPLE_BINARY_TARGET]
+      ),
+      `generator ${EXAMPLE_GENERATOR_NAME} {
+  provider = "${EXAMPLE_GENERATOR_PROVIDER}"
+  binaryTargets = ["${EXAMPLE_BINARY_TARGET}"]
+}`,
+    ],
+  ];
+  test.each(cases)("%s", (name, generator, expected) => {
+    expect(printGenerator(generator)).toBe(expected);
+  });
+});
 
 describe("print", () => {
   const exampleDataSourceName = "exampleDataSource";
@@ -130,6 +174,15 @@ model Order {
   provider = "${exampleDataSourceProvider}"
   url      = "${exampleDataSourceURL}"
 }`,
+    ],
+    [
+      "Single generator",
+      createSchema([], undefined, [
+        createGenerator(EXAMPLE_GENERATOR_NAME, EXAMPLE_GENERATOR_PROVIDER),
+      ]),
+      `${printGenerator(
+        createGenerator(EXAMPLE_GENERATOR_NAME, EXAMPLE_GENERATOR_PROVIDER)
+      )}`,
     ],
   ];
   test.each(cases)("print(%s)", async (name, schema, expected) => {
