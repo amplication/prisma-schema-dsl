@@ -24,14 +24,24 @@ const EXAMPLE_STRING_FIELD = createScalarField(
   false,
   true
 );
-const EXAMPLE_MODEL = createModel("User", [EXAMPLE_STRING_FIELD]);
+const EXAMPLE_OTHER_STRING_FIELD = createScalarField(
+  "exampleOtherFieldName",
+  ScalarType.String,
+  false,
+  true
+);
+const EXAMPLE_OBJECT_NAME = "ExampleObjectName";
+const EXAMPLE_MODEL_NAME = "ExampleModelName";
+const EXAMPLE_MODEL = createModel(EXAMPLE_MODEL_NAME, [EXAMPLE_STRING_FIELD]);
 const EXAMPLE_GENERATOR_NAME = "exampleGeneratorName";
 const EXAMPLE_GENERATOR_PROVIDER = "exampleGeneratorProvider";
 const EXAMPLE_GENERATOR_OUTPUT = "example-generator-output";
 const EXAMPLE_BINARY_TARGET = "example-binary-target";
+const EXAMPLE_DATA_SOURCE_NAME = "exampleDataSource";
+const EXAMPLE_DATA_SOURCE_PROVIDER = DataSourceProvider.MySQL;
+const EXAMPLE_DATA_SOURCE_URL = "mysql://example.com";
 
 describe("printField", () => {
-  const exampleObjectName = "ExampleObjectName";
   const cases: Array<[string, ObjectField | ScalarField, string]> = [
     [
       "Simple string field",
@@ -55,8 +65,8 @@ describe("printField", () => {
     ],
     [
       "Simple object field",
-      createObjectField(EXAMPLE_FIELD_NAME, exampleObjectName, false, true),
-      `${EXAMPLE_FIELD_NAME} ${exampleObjectName}`,
+      createObjectField(EXAMPLE_FIELD_NAME, EXAMPLE_OBJECT_NAME, false, true),
+      `${EXAMPLE_FIELD_NAME} ${EXAMPLE_OBJECT_NAME}`,
     ],
   ];
   test.each(cases)("%s", (name, field, expected) => {
@@ -65,27 +75,23 @@ describe("printField", () => {
 });
 
 describe("printModel", () => {
-  const exampleModelName = "exampleModelName";
-  const exampleOtherField = createScalarField(
-    "exampleOtherFieldName",
-    ScalarType.String,
-    false,
-    true
-  );
   const cases: Array<[string, Model, string]> = [
     [
       "Single field",
-      createModel(exampleModelName, [EXAMPLE_STRING_FIELD]),
-      `model ${exampleModelName} {
+      createModel(EXAMPLE_MODEL_NAME, [EXAMPLE_STRING_FIELD]),
+      `model ${EXAMPLE_MODEL_NAME} {
 ${printField(EXAMPLE_STRING_FIELD)}
 }`,
     ],
     [
       "Two fields",
-      createModel(exampleModelName, [EXAMPLE_STRING_FIELD, exampleOtherField]),
-      `model ${exampleModelName} {
+      createModel(EXAMPLE_MODEL_NAME, [
+        EXAMPLE_STRING_FIELD,
+        EXAMPLE_OTHER_STRING_FIELD,
+      ]),
+      `model ${EXAMPLE_MODEL_NAME} {
 ${printField(EXAMPLE_STRING_FIELD)}
-${printField(exampleOtherField)}
+${printField(EXAMPLE_OTHER_STRING_FIELD)}
 }`,
     ],
   ];
@@ -135,9 +141,6 @@ describe("printGenerator", () => {
 });
 
 describe("print", () => {
-  const exampleDataSourceName = "exampleDataSource";
-  const exampleDataSourceProvider = DataSourceProvider.MySQL;
-  const exampleDataSourceURL = "mysql://example.com";
   const cases: Array<[string, Schema, string]> = [
     [
       "Simple model",
@@ -165,14 +168,14 @@ model Order {
       createSchema(
         [],
         createDataSource(
-          exampleDataSourceName,
-          exampleDataSourceProvider,
-          exampleDataSourceURL
+          EXAMPLE_DATA_SOURCE_NAME,
+          EXAMPLE_DATA_SOURCE_PROVIDER,
+          EXAMPLE_DATA_SOURCE_URL
         )
       ),
-      `datasource ${exampleDataSourceName} {
-  provider = "${exampleDataSourceProvider}"
-  url      = "${exampleDataSourceURL}"
+      `datasource ${EXAMPLE_DATA_SOURCE_NAME} {
+  provider = "${EXAMPLE_DATA_SOURCE_PROVIDER}"
+  url      = "${EXAMPLE_DATA_SOURCE_URL}"
 }`,
     ],
     [
