@@ -69,6 +69,19 @@ describe("printField", () => {
       `${EXAMPLE_FIELD_NAME} ${ScalarType.String}[]`,
     ],
     [
+      "Simple date-time field",
+      createScalarField(
+        EXAMPLE_FIELD_NAME,
+        ScalarType.DateTime,
+        false,
+        true,
+        false,
+        false,
+        false
+      ),
+      `${EXAMPLE_FIELD_NAME} ${ScalarType.DateTime}`,
+    ],
+    [
       "Int field with default",
       createScalarField(
         EXAMPLE_FIELD_NAME,
