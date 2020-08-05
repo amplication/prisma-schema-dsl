@@ -9,6 +9,8 @@ import {
   FieldKind,
   BaseField,
   Generator,
+  CallExpression,
+  ScalarFieldDefault,
 } from "./types";
 import { format } from "./format";
 
@@ -103,10 +105,29 @@ function printScalarField(field: ScalarField): string {
   if (field.isUpdatedAt) {
     attributes.push("@updatedAt");
   }
-
+  if (field.default) {
+    attributes.push(`@default(${printScalarDefault(field.default)})`);
+  }
   const typeText = `${field.type}${modifiersText}`;
   const attributesText = attributes.join(" ");
   return [field.name, typeText, attributesText].filter(Boolean).join(" ");
+}
+
+function printScalarDefault(value: ScalarFieldDefault): string {
+  // String, JSON and DateTime
+  if (typeof value === "string") {
+    return value;
+  }
+  if (typeof value === "boolean") {
+    return String(value);
+  }
+  if (typeof value === "number") {
+    return String(value);
+  }
+  if (value instanceof CallExpression) {
+    return `${value.callee}()`;
+  }
+  throw new Error(`Invalid value: ${value}`);
 }
 
 function printObjectField(field: ObjectField): string {

@@ -15,6 +15,11 @@ import {
   DataSourceProvider,
   Model,
   Generator,
+  CallExpression,
+  AUTO_INCREMENT,
+  UUID,
+  CUID,
+  NOW,
 } from "./types";
 
 const EXAMPLE_FIELD_NAME = "exampleFieldName";
@@ -62,6 +67,90 @@ describe("printField", () => {
       "Simple string array field",
       createScalarField(EXAMPLE_FIELD_NAME, ScalarType.String, true, true),
       `${EXAMPLE_FIELD_NAME} ${ScalarType.String}[]`,
+    ],
+    [
+      "Int field with default",
+      createScalarField(
+        EXAMPLE_FIELD_NAME,
+        ScalarType.Int,
+        false,
+        true,
+        false,
+        false,
+        false,
+        42
+      ),
+      `${EXAMPLE_FIELD_NAME} ${ScalarType.Int} @default(42)`,
+    ],
+    [
+      "Int field with autoincrement()",
+      createScalarField(
+        EXAMPLE_FIELD_NAME,
+        ScalarType.Int,
+        false,
+        true,
+        false,
+        false,
+        false,
+        new CallExpression(AUTO_INCREMENT)
+      ),
+      `${EXAMPLE_FIELD_NAME} ${ScalarType.Int} @default(autoincrement())`,
+    ],
+    [
+      "String field with uuid()",
+      createScalarField(
+        EXAMPLE_FIELD_NAME,
+        ScalarType.String,
+        false,
+        true,
+        false,
+        false,
+        false,
+        new CallExpression(UUID)
+      ),
+      `${EXAMPLE_FIELD_NAME} ${ScalarType.String} @default(uuid())`,
+    ],
+    [
+      "String field with cuid()",
+      createScalarField(
+        EXAMPLE_FIELD_NAME,
+        ScalarType.String,
+        false,
+        true,
+        false,
+        false,
+        false,
+        new CallExpression(CUID)
+      ),
+      `${EXAMPLE_FIELD_NAME} ${ScalarType.String} @default(cuid())`,
+    ],
+    [
+      "Date-time field with now()",
+      createScalarField(
+        EXAMPLE_FIELD_NAME,
+        ScalarType.DateTime,
+        false,
+        true,
+        false,
+        false,
+        false,
+        new CallExpression(NOW)
+      ),
+      `${EXAMPLE_FIELD_NAME} ${ScalarType.DateTime} @default(now())`,
+    ],
+    [
+      "Boolean field with default value",
+      createScalarField(
+        EXAMPLE_FIELD_NAME,
+        ScalarType.Boolean,
+        false,
+        true,
+        false,
+        false,
+        false,
+        true
+      ),
+      `${EXAMPLE_FIELD_NAME} ${ScalarType.Boolean} @default(true)`,
     ],
     [
       "Simple object field",

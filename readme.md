@@ -32,12 +32,12 @@ Creates a schema AST object
 - Creates a model AST object
 - Validates given name argument
 
-#### `createScalarField(name: string, type: ScalarType, isList: boolean = false, isRequired: boolean = false, isUnique: boolean = false, isGenerated: boolean = false, isId: boolean = false, isUpdatedAt: boolean = false): ScalarField`
+#### `createScalarField(name: string, type: ScalarType, isList: boolean = false, isRequired: boolean = false, isUnique: boolean = false, isId: boolean = false, isUpdatedAt: boolean = false, default: | null | boolean | CallExpression | number | string = null): ScalarField`
 
 - Creates a scalar field AST object
 - Validates given name argument
 
-#### `createObjectField(name: string, type: string, isList: boolean = false, isRequired: boolean = false, isGenerated: boolean = false, relationName: string | null = null, relationToFields: string[] = [], relationToReferences: string[] = [], relationOnDelete: "NONE" = "NONE"): ObjectField`
+#### `createObjectField(name: string, type: string, isList: boolean = false, isRequired: boolean = false, relationName: string | null = null, relationToFields: string[] = [], relationToReferences: string[] = [], relationOnDelete: "NONE" = "NONE"): ObjectField`
 
 - Creates an object field AST object
 - Validates given name argument

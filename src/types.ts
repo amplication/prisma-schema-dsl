@@ -56,6 +56,25 @@ export enum ScalarType {
   Json = "Json",
 }
 
+/** Create a sequence of integers in the underlying database and assign the incremented values to the ID values of the created records based on the sequence */
+export const AUTO_INCREMENT = "autoincrement";
+
+/** Set a timestamp of the time when a record is created. */
+export const NOW = "now";
+
+/** Generate a globally unique identifier based on the cuid spec */
+export const CUID = "cuid";
+
+/** Generate a globally unique identifier based on the UUID spec. */
+export const UUID = "uuid";
+
+/** Represents default values that can't be expressed in the Prisma schema. Only available after introspection. */
+export const DB_GENERATED = "dbgenerated";
+
+export class CallExpression {
+  constructor(public callee: string) {}
+}
+
 export enum FieldKind {
   Scalar = "scalar",
   Object = "object",
@@ -65,8 +84,14 @@ export type BaseField = {
   name: string;
   isList: boolean;
   isRequired: boolean;
-  isGenerated: boolean;
 };
+
+export type ScalarFieldDefault =
+  | null
+  | boolean
+  | CallExpression
+  | number
+  | string;
 
 export type ScalarField = BaseField & {
   kind: FieldKind.Scalar;
@@ -74,6 +99,7 @@ export type ScalarField = BaseField & {
   isId: boolean;
   isUnique: boolean;
   isUpdatedAt: boolean;
+  default: ScalarFieldDefault;
 };
 
 export type ObjectField = BaseField & {
