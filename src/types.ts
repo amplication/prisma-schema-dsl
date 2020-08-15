@@ -78,6 +78,7 @@ export class CallExpression {
 export enum FieldKind {
   Scalar = "scalar",
   Object = "object",
+  Enum = "enum"
 }
 
 export type BaseField = {
@@ -115,6 +116,11 @@ export type Model = {
   name: string;
   fields: Array<ScalarField | ObjectField>;
 };
+
+export type PrismaEnum = {
+  name: string;
+  values: Array<String>
+}
 
 export type Schema = {
   models: Model[];

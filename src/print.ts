@@ -4,6 +4,7 @@ import {
   DataSource,
   DataSourceURLEnv,
   Model,
+  PrismaEnum,
   ObjectField,
   ScalarField,
   FieldKind,
@@ -79,6 +80,19 @@ export function printGenerator(generator: Generator): string {
 export function printModel(model: Model): string {
   const fieldTexts = model.fields.map(printField).join("\n");
   return `model ${model.name} {\n${fieldTexts}\n}`;
+}
+
+/**
+ * Prints model code from AST representation.
+ * Note: the code is not formatted.
+ * @param schema the model AST
+ * @returns code of the model
+ */
+export function printEnum(prismaEnum: PrismaEnum): string {
+  const fieldTexts = prismaEnum.values.map(value => value).join("\n");
+  return `enum ${prismaEnum.name} {
+${fieldTexts}
+}`;
 }
 
 /**

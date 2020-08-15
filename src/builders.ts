@@ -15,6 +15,7 @@ import {
   NOW,
   UUID,
   ScalarFieldDefault,
+  PrismaEnum,
 } from "./types";
 
 const NAME_REGEXP = /[A-Za-z][A-Za-z0-9_]*/;
@@ -29,6 +30,18 @@ export function createSchema(
     dataSource,
     generators,
     models,
+  };
+}
+
+export function createEnum(
+  name: string,
+  values: Array<string>
+): PrismaEnum {
+  validateName(name);
+
+  return {
+    name,
+    values,
   };
 }
 

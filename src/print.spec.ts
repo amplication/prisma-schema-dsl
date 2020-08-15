@@ -5,8 +5,9 @@ import {
   createObjectField,
   createDataSource,
   createGenerator,
+  createEnum,
 } from "./builders";
-import { print, printField, printModel, printGenerator } from "./print";
+import { print, printField, printModel, printGenerator, printEnum } from "./print";
 import {
   ScalarType,
   Schema,
@@ -14,6 +15,7 @@ import {
   ScalarField,
   DataSourceProvider,
   Model,
+  PrismaEnum,
   Generator,
   CallExpression,
   AUTO_INCREMENT,
@@ -45,6 +47,8 @@ const EXAMPLE_BINARY_TARGET = "example-binary-target";
 const EXAMPLE_DATA_SOURCE_NAME = "exampleDataSource";
 const EXAMPLE_DATA_SOURCE_PROVIDER = DataSourceProvider.MySQL;
 const EXAMPLE_DATA_SOURCE_URL = "mysql://example.com";
+const EXAMPLE_ENUM_NAME = "Role";
+const EXAMPLE_ENUM_VALUE = "Role";
 
 describe("printField", () => {
   const cases: Array<[string, ObjectField | ScalarField, string]> = [
@@ -199,6 +203,31 @@ ${printField(EXAMPLE_OTHER_STRING_FIELD)}
   ];
   test.each(cases)("%s", (name, model, expected) => {
     expect(printModel(model)).toBe(expected);
+  });
+});
+
+
+describe("printEnum", () => {
+  const cases: Array<[string, PrismaEnum, string]> = [
+    [
+      "Single enum value",
+      createEnum(EXAMPLE_ENUM_NAME, [EXAMPLE_ENUM_VALUE]),
+      `enum ${EXAMPLE_ENUM_NAME} {
+${EXAMPLE_ENUM_VALUE}
+}`,
+    ],
+    [
+      "Many enum value",
+      createEnum(EXAMPLE_ENUM_NAME, [EXAMPLE_ENUM_VALUE, EXAMPLE_ENUM_VALUE]),
+      `enum ${EXAMPLE_ENUM_NAME} {
+${EXAMPLE_ENUM_VALUE}
+${EXAMPLE_ENUM_VALUE}
+}`,
+    ],
+  ];
+  test.each(cases)("%s", (name, model, expected) => {
+    console.log(printEnum(model))
+    expect(printEnum(model)).toBe(expected);
   });
 });
 
