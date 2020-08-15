@@ -78,7 +78,6 @@ export class CallExpression {
 export enum FieldKind {
   Scalar = "scalar",
   Object = "object",
-  Enum = "enum"
 }
 
 export type BaseField = {
