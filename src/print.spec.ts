@@ -7,7 +7,13 @@ import {
   createGenerator,
   createEnum,
 } from "./builders";
-import { print, printField, printModel, printGenerator, printEnum } from "./print";
+import {
+  print,
+  printField,
+  printModel,
+  printGenerator,
+  printEnum,
+} from "./print";
 import {
   ScalarType,
   Schema,
@@ -206,7 +212,6 @@ ${printField(EXAMPLE_OTHER_STRING_FIELD)}
   });
 });
 
-
 describe("printEnum", () => {
   const cases: Array<[string, PrismaEnum, string]> = [
     [
@@ -226,7 +231,7 @@ ${EXAMPLE_ENUM_VALUE}
     ],
   ];
   test.each(cases)("%s", (name, model, expected) => {
-    console.log(printEnum(model))
+    console.log(printEnum(model));
     expect(printEnum(model)).toBe(expected);
   });
 });

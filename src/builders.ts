@@ -33,10 +33,7 @@ export function createSchema(
   };
 }
 
-export function createEnum(
-  name: string,
-  values: Array<string>
-): PrismaEnum {
+export function createEnum(name: string, values: Array<string>): PrismaEnum {
   validateName(name);
 
   return {

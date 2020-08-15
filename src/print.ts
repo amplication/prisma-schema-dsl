@@ -89,7 +89,7 @@ export function printModel(model: Model): string {
  * @returns code of the model
  */
 export function printEnum(prismaEnum: PrismaEnum): string {
-  const fieldTexts = prismaEnum.values.map(value => value).join("\n");
+  const fieldTexts = prismaEnum.values.map((value) => value).join("\n");
   return `enum ${prismaEnum.name} {
 ${fieldTexts}
 }`;

@@ -118,8 +118,8 @@ export type Model = {
 
 export type PrismaEnum = {
   name: string;
-  values: Array<String>
-}
+  values: Array<String>;
+};
 
 export type Schema = {
   models: Model[];
