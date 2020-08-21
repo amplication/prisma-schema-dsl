@@ -84,6 +84,8 @@ export type BaseField = {
   name: string;
   isList: boolean;
   isRequired: boolean;
+  /** @see https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-schema#comments */
+  documentation?: string;
 };
 
 export type ScalarFieldDefault =
@@ -114,10 +116,20 @@ export type ObjectField = BaseField & {
 export type Model = {
   name: string;
   fields: Array<ScalarField | ObjectField>;
+  /** @see https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-schema#comments */
+  documentation?: string;
+};
+
+export type Enum = {
+  name: string;
+  values: string[];
+  /** @see https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-schema#comments */
+  documentation?: string;
 };
 
 export type Schema = {
   models: Model[];
+  enums: Enum[];
   dataSource?: DataSource;
   generators: Generator[];
 };

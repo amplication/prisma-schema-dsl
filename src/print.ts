@@ -11,6 +11,7 @@ import {
   Generator,
   CallExpression,
   ScalarFieldDefault,
+  Enum,
 } from "./types";
 import { format } from "./format";
 
@@ -35,6 +36,7 @@ export async function print(schema: Schema): Promise<string> {
     statements.push(...schema.generators.map(printGenerator));
   }
   statements.push(...schema.models.map(printModel));
+  statements.push(...schema.enums.map(printEnum));
   const schemaText = statements.join("\n");
   return format(schemaText);
 }
@@ -71,26 +73,71 @@ export function printGenerator(generator: Generator): string {
 }
 
 /**
+ * Prints documentation code from AST representation
+ * @param documentation the documentation AST representation
+ * @returns code of the documentation
+ */
+export function printDocumentation(documentation: string): string {
+  return `/// ${documentation}`;
+}
+
+/**
+ * If defined, adds documentation to the provided code
+ * @param documentation documentation of the provided node's code
+ * @param code code of an AST node
+ * @returns if defined, code with documentation, otherwise the code as is
+ */
+function withDocumentation(
+  documentation: string | undefined,
+  code: string
+): string {
+  if (documentation) {
+    return [printDocumentation(documentation), code].join("\n");
+  }
+  return code;
+}
+
+/**
+ * Prints enum code from AST representation
+ * Node: the code is not formatted.
+ * @param enum_ the enum AST
+ * @returns code of the enum
+ */
+export function printEnum(enum_: Enum): string {
+  const valuesText = enum_.values.join("\n");
+  return withDocumentation(
+    enum_.documentation,
+    `enum ${enum_.name} {\n${valuesText}\n}`
+  );
+}
+
+/**
  * Prints model code from AST representation.
  * Note: the code is not formatted.
- * @param schema the model AST
+ * @param model the model AST
  * @returns code of the model
  */
 export function printModel(model: Model): string {
   const fieldTexts = model.fields.map(printField).join("\n");
-  return `model ${model.name} {\n${fieldTexts}\n}`;
+  return withDocumentation(
+    model.documentation,
+    `model ${model.name} {\n${fieldTexts}\n}`
+  );
 }
 
 /**
  * Prints model field code from AST representation.
  * Note: the code is not formatted.
- * @param schema the field AST
+ * @param field the field AST
  * @returns code of the field
  */
 export function printField(field: ObjectField | ScalarField) {
-  return field.kind === FieldKind.Scalar
-    ? printScalarField(field)
-    : printObjectField(field);
+  return withDocumentation(
+    field.documentation,
+    field.kind === FieldKind.Scalar
+      ? printScalarField(field)
+      : printObjectField(field)
+  );
 }
 
 function printScalarField(field: ScalarField): string {

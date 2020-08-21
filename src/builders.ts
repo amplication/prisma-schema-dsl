@@ -15,6 +15,7 @@ import {
   NOW,
   UUID,
   ScalarFieldDefault,
+  Enum,
 } from "./types";
 
 const NAME_REGEXP = /[A-Za-z][A-Za-z0-9_]*/;
@@ -22,25 +23,41 @@ const NAME_REGEXP = /[A-Za-z][A-Za-z0-9_]*/;
 /** Creates a schema AST object */
 export function createSchema(
   models: Model[],
+  enums: Enum[],
   dataSource?: DataSource,
   generators: Generator[] = []
 ): Schema {
   return {
     dataSource,
     generators,
+    enums,
     models,
+  };
+}
+
+export function createEnum(
+  name: string,
+  values: string[],
+  documentation?: string
+): Enum {
+  return {
+    name,
+    values,
+    documentation,
   };
 }
 
 /** Creates a model AST object */
 export function createModel(
   name: string,
-  fields: Array<ScalarField | ObjectField>
+  fields: Array<ScalarField | ObjectField>,
+  documentation?: string
 ): Model {
   validateName(name);
   return {
     name,
     fields,
+    documentation,
   };
 }
 
@@ -56,7 +73,8 @@ export function createScalarField(
   isUnique: boolean = false,
   isId: boolean = false,
   isUpdatedAt: boolean = false,
-  defaultValue: ScalarFieldDefault = null
+  defaultValue: ScalarFieldDefault = null,
+  documentation?: string
 ): ScalarField {
   validateName(name);
   validateScalarDefault(type, defaultValue);
@@ -70,6 +88,7 @@ export function createScalarField(
     isId,
     isUpdatedAt,
     default: defaultValue,
+    documentation,
   };
 }
 
@@ -154,7 +173,8 @@ export function createObjectField(
   relationName: string | null = null,
   relationToFields: string[] = [],
   relationToReferences: string[] = [],
-  relationOnDelete: "NONE" = "NONE"
+  relationOnDelete: "NONE" = "NONE",
+  documentation?: string
 ): ObjectField {
   validateName(name);
   return {
@@ -167,6 +187,7 @@ export function createObjectField(
     relationToFields,
     relationToReferences,
     relationOnDelete,
+    documentation,
   };
 }
 

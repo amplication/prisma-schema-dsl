@@ -5,8 +5,16 @@ import {
   createObjectField,
   createDataSource,
   createGenerator,
+  createEnum,
 } from "./builders";
-import { print, printField, printModel, printGenerator } from "./print";
+import {
+  print,
+  printField,
+  printModel,
+  printGenerator,
+  printEnum,
+  printDocumentation,
+} from "./print";
 import {
   ScalarType,
   Schema,
@@ -20,8 +28,13 @@ import {
   UUID,
   CUID,
   NOW,
+  Enum,
 } from "./types";
 
+const EXAMPLE_DOCUMENTATION = "Example Documentation";
+const EXAMPLE_ENUM_NAME = "ExampleEnumName";
+const EXAMPLE_ENUM_VALUE = "ExampleEnumValue";
+const EXAMPLE_OTHER_ENUM_VALUE = "ExampleOtherEnumValue";
 const EXAMPLE_FIELD_NAME = "exampleFieldName";
 const EXAMPLE_STRING_FIELD = createScalarField(
   EXAMPLE_FIELD_NAME,
@@ -46,12 +59,61 @@ const EXAMPLE_DATA_SOURCE_NAME = "exampleDataSource";
 const EXAMPLE_DATA_SOURCE_PROVIDER = DataSourceProvider.MySQL;
 const EXAMPLE_DATA_SOURCE_URL = "mysql://example.com";
 
+describe("printEnum", () => {
+  const cases: Array<[string, Enum, string]> = [
+    [
+      "Single value",
+      createEnum(EXAMPLE_ENUM_NAME, [EXAMPLE_ENUM_VALUE]),
+      `enum ${EXAMPLE_ENUM_NAME} {\n${EXAMPLE_ENUM_VALUE}\n}`,
+    ],
+    [
+      "Single value with documentation",
+      createEnum(
+        EXAMPLE_ENUM_NAME,
+        [EXAMPLE_ENUM_VALUE],
+        EXAMPLE_DOCUMENTATION
+      ),
+      `${printDocumentation(
+        EXAMPLE_DOCUMENTATION
+      )}\nenum ${EXAMPLE_ENUM_NAME} {\n${EXAMPLE_ENUM_VALUE}\n}`,
+    ],
+    [
+      "Two values",
+      createEnum(EXAMPLE_ENUM_NAME, [
+        EXAMPLE_ENUM_VALUE,
+        EXAMPLE_OTHER_ENUM_VALUE,
+      ]),
+      `enum ${EXAMPLE_ENUM_NAME} {\n${EXAMPLE_ENUM_VALUE}\n${EXAMPLE_OTHER_ENUM_VALUE}\n}`,
+    ],
+  ];
+  test.each(cases)("%s", (name, enum_, expected) => {
+    expect(printEnum(enum_)).toBe(expected);
+  });
+});
+
 describe("printField", () => {
   const cases: Array<[string, ObjectField | ScalarField, string]> = [
     [
       "Simple string field",
       EXAMPLE_STRING_FIELD,
       `${EXAMPLE_FIELD_NAME} ${ScalarType.String}`,
+    ],
+    [
+      "Simple string field with documentation",
+      createScalarField(
+        EXAMPLE_FIELD_NAME,
+        ScalarType.String,
+        false,
+        true,
+        false,
+        false,
+        false,
+        undefined,
+        EXAMPLE_DOCUMENTATION
+      ),
+      `${printDocumentation(EXAMPLE_DOCUMENTATION)}\n${EXAMPLE_FIELD_NAME} ${
+        ScalarType.String
+      }`,
     ],
     [
       "Simple float field",
@@ -186,6 +248,18 @@ ${printField(EXAMPLE_STRING_FIELD)}
 }`,
     ],
     [
+      "Single field and documentation",
+      createModel(
+        EXAMPLE_MODEL_NAME,
+        [EXAMPLE_STRING_FIELD],
+        EXAMPLE_DOCUMENTATION
+      ),
+      `${printDocumentation(EXAMPLE_DOCUMENTATION)}
+model ${EXAMPLE_MODEL_NAME} {
+${printField(EXAMPLE_STRING_FIELD)}
+}`,
+    ],
+    [
       "Two fields",
       createModel(EXAMPLE_MODEL_NAME, [
         EXAMPLE_STRING_FIELD,
@@ -246,17 +320,17 @@ describe("print", () => {
   const cases: Array<[string, Schema, string]> = [
     [
       "Simple model",
-      createSchema([EXAMPLE_MODEL]),
+      createSchema([EXAMPLE_MODEL], []),
       `model ${EXAMPLE_MODEL.name} {
   ${printField(EXAMPLE_STRING_FIELD)}
 }`,
     ],
     [
       "Two models",
-      createSchema([
-        EXAMPLE_MODEL,
-        createModel("Order", [EXAMPLE_STRING_FIELD]),
-      ]),
+      createSchema(
+        [EXAMPLE_MODEL, createModel("Order", [EXAMPLE_STRING_FIELD])],
+        []
+      ),
       `model ${EXAMPLE_MODEL.name} {
   ${printField(EXAMPLE_STRING_FIELD)}
 }
@@ -268,6 +342,7 @@ model Order {
     [
       "Single datasource",
       createSchema(
+        [],
         [],
         createDataSource(
           EXAMPLE_DATA_SOURCE_NAME,
@@ -282,12 +357,19 @@ model Order {
     ],
     [
       "Single generator",
-      createSchema([], undefined, [
+      createSchema([], [], undefined, [
         createGenerator(EXAMPLE_GENERATOR_NAME, EXAMPLE_GENERATOR_PROVIDER),
       ]),
       `${printGenerator(
         createGenerator(EXAMPLE_GENERATOR_NAME, EXAMPLE_GENERATOR_PROVIDER)
       )}`,
+    ],
+    [
+      "Single enum",
+      createSchema([], [createEnum(EXAMPLE_ENUM_NAME, [EXAMPLE_ENUM_VALUE])]),
+      `enum ${EXAMPLE_ENUM_NAME} {
+  ${EXAMPLE_ENUM_VALUE}
+}`,
     ],
   ];
   test.each(cases)("print(%s)", async (name, schema, expected) => {
