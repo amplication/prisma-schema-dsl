@@ -41,6 +41,7 @@ export function createEnum(
   values: string[],
   documentation?: string
 ): Enum {
+  validateName(name);
   return {
     name,
     values,
