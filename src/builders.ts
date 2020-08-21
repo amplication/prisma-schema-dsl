@@ -35,6 +35,7 @@ export function createSchema(
   };
 }
 
+/** Creates an enum AST object */
 export function createEnum(
   name: string,
   values: string[],

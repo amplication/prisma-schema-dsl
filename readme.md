@@ -27,6 +27,10 @@ The schema is formatted using prisma-format.
 
 Creates a schema AST object
 
+#### `createEnum(name: string, values: string[], documentation?: string): Enum`
+
+Creates an enum AST object
+
 #### `createModel(name: string, fields: Array<ScalarField | ObjectField>): Model`
 
 - Creates a model AST object
