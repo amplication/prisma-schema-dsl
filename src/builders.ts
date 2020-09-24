@@ -19,6 +19,8 @@ import {
 } from "./types";
 
 const NAME_REGEXP = /[A-Za-z][A-Za-z0-9_]*/;
+export const OPTIONAL_LIST_ERROR_MESSAGE =
+  "Invalid modifiers: You cannot combine isRequired: false and isList: true - optional lists are not supported.";
 
 /** Creates a schema AST object */
 export function createSchema(
@@ -80,6 +82,7 @@ export function createScalarField(
 ): ScalarField {
   validateName(name);
   validateScalarDefault(type, defaultValue);
+  validateModifiers(isRequired, isList);
   return {
     name,
     isList,
@@ -179,6 +182,7 @@ export function createObjectField(
   documentation?: string
 ): ObjectField {
   validateName(name);
+  validateModifiers(isRequired, isList);
   return {
     name,
     isList,
@@ -198,6 +202,12 @@ function validateName(name: string): void {
     throw new Error(
       `Invalid name: "${name}". Name must start with a letter and can contain only letters, numbers and underscores`
     );
+  }
+}
+
+function validateModifiers(isRequired: boolean, isList: boolean): void {
+  if (!isRequired && isList) {
+    throw new Error(OPTIONAL_LIST_ERROR_MESSAGE);
   }
 }
 
