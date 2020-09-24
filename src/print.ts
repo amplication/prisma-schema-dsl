@@ -13,7 +13,7 @@ import {
   ScalarFieldDefault,
   Enum,
 } from "./types";
-import { format } from "./format";
+import { formatSchema } from "@prisma/sdk";
 
 type Relation = {
   name?: string | null;
@@ -38,7 +38,7 @@ export async function print(schema: Schema): Promise<string> {
   statements.push(...schema.models.map(printModel));
   statements.push(...schema.enums.map(printEnum));
   const schemaText = statements.join("\n");
-  return format(schemaText);
+  return formatSchema({ schema: schemaText });
 }
 
 /**
