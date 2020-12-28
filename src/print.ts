@@ -209,10 +209,12 @@ function printFieldModifiers(field: BaseField): string {
 }
 
 function printRelation(relation: Relation): string {
-  const nameText = relation.name ? `name: ${relation.name}` : "";
+  const nameText = relation.name ? `name: "${relation.name}"` : "";
   const fieldsText = relation.fields ? `fields: [${relation.fields}]` : "";
   const referencesText = relation.references
     ? `references: [${relation.references}]`
     : "";
-  return `@relation(${nameText} ${fieldsText} ${referencesText})`;
+  return `@relation(${[nameText, fieldsText, referencesText]
+    .filter(Boolean)
+    .join(", ")})`;
 }

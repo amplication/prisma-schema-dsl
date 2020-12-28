@@ -36,6 +36,9 @@ const EXAMPLE_ENUM_NAME = "ExampleEnumName";
 const EXAMPLE_ENUM_VALUE = "ExampleEnumValue";
 const EXAMPLE_OTHER_ENUM_VALUE = "ExampleOtherEnumValue";
 const EXAMPLE_FIELD_NAME = "exampleFieldName";
+const EXAMPLE_RELATION_FIELD_NAME = "exampleRelationFieldName";
+const EXAMPLE_RELATION_REFERENCE_FIELD_NAME =
+  "exampleRelationReferenceFieldName";
 const EXAMPLE_STRING_FIELD = createScalarField(
   EXAMPLE_FIELD_NAME,
   ScalarType.String,
@@ -58,6 +61,7 @@ const EXAMPLE_BINARY_TARGET = "example-binary-target";
 const EXAMPLE_DATA_SOURCE_NAME = "exampleDataSource";
 const EXAMPLE_DATA_SOURCE_PROVIDER = DataSourceProvider.MySQL;
 const EXAMPLE_DATA_SOURCE_URL = "mysql://example.com";
+const EXAMPLE_RELATION_NAME = "exampleRelationName";
 
 describe("printEnum", () => {
   const cases: Array<[string, Enum, string]> = [
@@ -231,6 +235,55 @@ describe("printField", () => {
       "Simple object field",
       createObjectField(EXAMPLE_FIELD_NAME, EXAMPLE_OBJECT_NAME, false, true),
       `${EXAMPLE_FIELD_NAME} ${EXAMPLE_OBJECT_NAME}`,
+    ],
+    [
+      "Object field with relation",
+      createObjectField(
+        EXAMPLE_FIELD_NAME,
+        EXAMPLE_OBJECT_NAME,
+        false,
+        true,
+        EXAMPLE_RELATION_NAME
+      ),
+      `${EXAMPLE_FIELD_NAME} ${EXAMPLE_OBJECT_NAME} @relation(name: "${EXAMPLE_RELATION_NAME}")`,
+    ],
+    [
+      "Object field with fields",
+      createObjectField(
+        EXAMPLE_FIELD_NAME,
+        EXAMPLE_OBJECT_NAME,
+        false,
+        true,
+        null,
+        [EXAMPLE_RELATION_FIELD_NAME]
+      ),
+      `${EXAMPLE_FIELD_NAME} ${EXAMPLE_OBJECT_NAME} @relation(fields: [${EXAMPLE_RELATION_FIELD_NAME}])`,
+    ],
+    [
+      "Object field with references",
+      createObjectField(
+        EXAMPLE_FIELD_NAME,
+        EXAMPLE_OBJECT_NAME,
+        false,
+        true,
+        null,
+        [],
+        [EXAMPLE_RELATION_REFERENCE_FIELD_NAME]
+      ),
+      `${EXAMPLE_FIELD_NAME} ${EXAMPLE_OBJECT_NAME} @relation(references: [${EXAMPLE_RELATION_REFERENCE_FIELD_NAME}])`,
+    ],
+    [
+      "Object field with full relation",
+      createObjectField(
+        EXAMPLE_FIELD_NAME,
+        EXAMPLE_OBJECT_NAME,
+        false,
+        true,
+        EXAMPLE_RELATION_NAME,
+        [EXAMPLE_RELATION_FIELD_NAME],
+        [EXAMPLE_RELATION_REFERENCE_FIELD_NAME]
+      ),
+      `${EXAMPLE_FIELD_NAME} ${EXAMPLE_OBJECT_NAME} @relation(name: "${EXAMPLE_RELATION_NAME}", fields: [${EXAMPLE_RELATION_FIELD_NAME}], references: [${EXAMPLE_RELATION_REFERENCE_FIELD_NAME}])`,
     ],
   ];
   test.each(cases)("%s", (name, field, expected) => {

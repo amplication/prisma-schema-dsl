@@ -176,8 +176,8 @@ export function createObjectField(
   isList: boolean = false,
   isRequired: boolean = false,
   relationName: string | null = null,
-  relationToFields: string[] = [],
-  relationToReferences: string[] = [],
+  relationFields: string[] = [],
+  relationReferences: string[] = [],
   relationOnDelete: "NONE" = "NONE",
   documentation?: string
 ): ObjectField {
@@ -190,8 +190,8 @@ export function createObjectField(
     kind: FieldKind.Object,
     type,
     relationName,
-    relationToFields,
-    relationToReferences,
+    relationToFields: relationFields,
+    relationToReferences: relationReferences,
     relationOnDelete,
     documentation,
   };
