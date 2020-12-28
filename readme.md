@@ -54,6 +54,7 @@ Creates a data source AST object
 ## Development
 
 - Clone the repository `git clone git@github.com:amplication/prisma-schema-dsl.git`
+- Make sure to use npm@7 `npm i -g npm@7`
 - Install the dependencies `npm install`
 - Run tests `npm test`
 
