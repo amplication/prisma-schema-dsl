@@ -5,6 +5,7 @@ export enum DataSourceProvider {
   PostgreSQL = "postgresql",
   MySQL = "mysql",
   SQLite = "sqlite",
+  MongoDB = "MongoDB"
 }
 
 /**
