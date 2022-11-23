@@ -12,6 +12,7 @@ import {
   CallExpression,
   ScalarFieldDefault,
   Enum,
+  DataSourceProvider,
 } from "./types";
 import { formatSchema } from "@prisma/sdk";
 
@@ -35,7 +36,11 @@ export async function print(schema: Schema): Promise<string> {
   if (schema.generators.length) {
     statements.push(...schema.generators.map(printGenerator));
   }
-  statements.push(...schema.models.map(printModel));
+  const providerType = schema.dataSource?.provider;
+  providerType &&
+    statements.push(
+      ...schema.models.map((model) => printModel(model, providerType))
+    );
   statements.push(...schema.enums.map(printEnum));
   const schemaText = statements.join("\n");
   return formatSchema({ schema: schemaText });
@@ -117,8 +122,10 @@ export function printEnum(enum_: Enum): string {
  * @param model the model AST
  * @returns code of the model
  */
-export function printModel(model: Model): string {
-  const fieldTexts = model.fields.map(printField).join("\n");
+export function printModel(model: Model, provider: DataSourceProvider): string {
+  const fieldTexts = model.fields
+    .map((field) => printField(field, provider))
+    .join("\n");
   return withDocumentation(
     model.documentation,
     `model ${model.name} {\n${fieldTexts}\n}`
@@ -131,19 +138,28 @@ export function printModel(model: Model): string {
  * @param field the field AST
  * @returns code of the field
  */
-export function printField(field: ObjectField | ScalarField) {
+export function printField(
+  field: ObjectField | ScalarField,
+  provider: DataSourceProvider
+) {
   return withDocumentation(
     field.documentation,
     field.kind === FieldKind.Scalar
-      ? printScalarField(field)
+      ? printScalarField(field, provider)
       : printObjectField(field)
   );
 }
 
-function printScalarField(field: ScalarField): string {
+function printScalarField(
+  field: ScalarField,
+  provider: DataSourceProvider
+): string {
   const modifiersText = printFieldModifiers(field);
   const attributes: string[] = [];
-  if (field.isId) {
+
+  if (field.isId && provider === DataSourceProvider.MongoDB) {
+    attributes.push(`@id @map("_id") @mongo.ObjectId`);
+  } else if (field.isId) {
     attributes.push("@id");
   }
   if (field.isUnique) {
