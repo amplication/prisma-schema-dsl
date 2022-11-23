@@ -156,11 +156,15 @@ function printScalarField(
 ): string {
   const modifiersText = printFieldModifiers(field);
   const attributes: string[] = [];
+  const isMongoDBProvider = provider === DataSourceProvider.MongoDB;
 
-  if (field.isId && provider === DataSourceProvider.MongoDB) {
+  if (field.isId && isMongoDBProvider) {
     attributes.push(`@id @map("_id") @mongo.ObjectId`);
   } else if (field.isId) {
     attributes.push("@id");
+  }
+  if (isMongoDBProvider && field.name.includes("id")) {
+    attributes.push("@mongo.ObjectId");
   }
   if (field.isUnique) {
     attributes.push("@unique");
