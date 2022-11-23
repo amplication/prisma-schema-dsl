@@ -183,6 +183,7 @@ export function createObjectField(
 ): ObjectField {
   validateName(name);
   validateModifiers(isRequired, isList);
+
   return {
     name,
     isList,

@@ -146,7 +146,7 @@ export function printField(
     field.documentation,
     field.kind === FieldKind.Scalar
       ? printScalarField(field, provider)
-      : printObjectField(field)
+      : printObjectField(field, provider)
   );
 }
 
@@ -193,8 +193,12 @@ function printScalarDefault(value: ScalarFieldDefault): string {
   throw new Error(`Invalid value: ${value}`);
 }
 
-function printObjectField(field: ObjectField): string {
+function printObjectField(
+  field: ObjectField,
+  provider: DataSourceProvider
+): string {
   const relation: Relation = {};
+
   if (field.relationName) {
     relation.name = field.relationName;
   }
@@ -206,7 +210,7 @@ function printObjectField(field: ObjectField): string {
   }
   const attributes: string[] = [];
   if (!isEmpty(relation)) {
-    attributes.push(printRelation(relation));
+    attributes.push(printRelation(relation, provider));
   }
   const typeText = `${field.type}${printFieldModifiers(field)}`;
   const attributesText = attributes.join(" ");
@@ -224,13 +228,28 @@ function printFieldModifiers(field: BaseField): string {
   return modifiers.join("");
 }
 
-function printRelation(relation: Relation): string {
+function printRelation(
+  relation: Relation,
+  provider: DataSourceProvider
+): string {
+  const isMongodbProvider = provider === DataSourceProvider.MongoDB;
   const nameText = relation.name ? `name: "${relation.name}"` : "";
   const fieldsText = relation.fields ? `fields: [${relation.fields}]` : "";
   const referencesText = relation.references
     ? `references: [${relation.references}]`
     : "";
-  return `@relation(${[nameText, fieldsText, referencesText]
+  const onDeleteFiled =
+    relation.references && isMongodbProvider ? "onDelete:NoAction" : "";
+  const onUpdateFiled =
+    relation.references && isMongodbProvider ? "onUpdate:NoAction" : "";
+
+  return `@relation(${[
+    nameText,
+    fieldsText,
+    referencesText,
+    onDeleteFiled,
+    onUpdateFiled,
+  ]
     .filter(Boolean)
     .join(", ")})`;
 }
