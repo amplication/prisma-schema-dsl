@@ -13,7 +13,7 @@ import {
   ScalarFieldDefault,
   Enum,
 } from "./types";
-import { formatSchema } from "@prisma/sdk";
+import { formatSchema } from "@prisma/internals";
 
 type Relation = {
   name?: string | null;
