@@ -426,6 +426,9 @@ model Order {
     ],
   ];
   test.each(cases)("print(%s)", async (name, schema, expected) => {
-    expect(await print(schema)).toBe(expected);
+    console.log(await print(schema), "schema");
+    console.log(expected, "expected");
+
+    expect(await (await print(schema)).trim()).toBe(expected.trim());
   });
 });
