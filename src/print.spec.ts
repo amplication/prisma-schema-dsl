@@ -29,7 +29,7 @@ import {
   CUID,
   NOW,
   Enum,
-} from "./types";
+} from "prisma-schema-dsl-types";
 
 const EXAMPLE_DOCUMENTATION = "Example Documentation";
 const EXAMPLE_ENUM_NAME = "ExampleEnumName";

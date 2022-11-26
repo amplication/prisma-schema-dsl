@@ -12,7 +12,7 @@ import {
   CallExpression,
   ScalarFieldDefault,
   Enum,
-} from "./types";
+} from "prisma-schema-dsl-types";
 import { formatSchema } from "@prisma/internals";
 
 type Relation = {
