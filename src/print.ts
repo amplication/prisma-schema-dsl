@@ -64,7 +64,7 @@ export function printGenerator(generator: Generator): string {
   if (generator.output) {
     fields.push(`output = "${generator.output}"`);
   }
-  if (generator.binaryTargets.length) {
+  if (generator.binaryTargets?.length) {
     fields.push(`binaryTargets = ${JSON.stringify(generator.binaryTargets)}`);
   }
   return `generator ${generator.name} {
