@@ -29,7 +29,7 @@ import {
   CUID,
   NOW,
   Enum,
-} from "./types";
+} from "prisma-schema-dsl-types";
 
 const EXAMPLE_DOCUMENTATION = "Example Documentation";
 const EXAMPLE_ENUM_NAME = "ExampleEnumName";
@@ -427,6 +427,6 @@ model Order {
     ],
   ];
   test.each(cases)("print(%s)", async (name, schema, expected) => {
-    expect(await print(schema)).toBe(expected);
+    expect(await await print(schema)).toBe(expected + "\n");
   });
 });
