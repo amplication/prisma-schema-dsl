@@ -62,7 +62,7 @@ const EXAMPLE_DATA_SOURCE_NAME = "exampleDataSource";
 const EXAMPLE_DATA_SOURCE_PROVIDER = DataSourceProvider.MySQL;
 const EXAMPLE_DATA_SOURCE_URL = "mysql://example.com";
 const EXAMPLE_RELATION_NAME = "exampleRelationName";
-const PostgreSQLProvider = DataSourceProvider.PostgreSQL; 
+const PostgreSQLProvider = DataSourceProvider.PostgreSQL;
 
 describe("printEnum", () => {
   const cases: Array<[string, Enum, string]> = [
@@ -288,7 +288,7 @@ describe("printField", () => {
     ],
   ];
   test.each(cases)("%s", (name, field, expected) => {
-    expect(printField(field,PostgreSQLProvider)).toBe(expected);
+    expect(printField(field, PostgreSQLProvider)).toBe(expected);
   });
 });
 
@@ -298,7 +298,7 @@ describe("printModel", () => {
       "Single field",
       createModel(EXAMPLE_MODEL_NAME, [EXAMPLE_STRING_FIELD]),
       `model ${EXAMPLE_MODEL_NAME} {
-${printField(EXAMPLE_STRING_FIELD,PostgreSQLProvider)}
+${printField(EXAMPLE_STRING_FIELD, PostgreSQLProvider)}
 }`,
     ],
     [
@@ -310,7 +310,7 @@ ${printField(EXAMPLE_STRING_FIELD,PostgreSQLProvider)}
       ),
       `${printDocumentation(EXAMPLE_DOCUMENTATION)}
 model ${EXAMPLE_MODEL_NAME} {
-${printField(EXAMPLE_STRING_FIELD,PostgreSQLProvider)}
+${printField(EXAMPLE_STRING_FIELD, PostgreSQLProvider)}
 }`,
     ],
     [
@@ -320,13 +320,13 @@ ${printField(EXAMPLE_STRING_FIELD,PostgreSQLProvider)}
         EXAMPLE_OTHER_STRING_FIELD,
       ]),
       `model ${EXAMPLE_MODEL_NAME} {
-${printField(EXAMPLE_STRING_FIELD,PostgreSQLProvider)}
-${printField(EXAMPLE_OTHER_STRING_FIELD,PostgreSQLProvider)}
+${printField(EXAMPLE_STRING_FIELD, PostgreSQLProvider)}
+${printField(EXAMPLE_OTHER_STRING_FIELD, PostgreSQLProvider)}
 }`,
     ],
   ];
   test.each(cases)("%s", (name, model, expected) => {
-    expect(printModel(model,PostgreSQLProvider)).toBe(expected);
+    expect(printModel(model, PostgreSQLProvider)).toBe(expected);
   });
 });
 
@@ -376,7 +376,7 @@ describe("print", () => {
       "Simple model",
       createSchema([EXAMPLE_MODEL], []),
       `model ${EXAMPLE_MODEL.name} {
-  ${printField(EXAMPLE_STRING_FIELD,PostgreSQLProvider)}
+  ${printField(EXAMPLE_STRING_FIELD, PostgreSQLProvider)}
 }`,
     ],
     [
@@ -386,11 +386,11 @@ describe("print", () => {
         []
       ),
       `model ${EXAMPLE_MODEL.name} {
-  ${printField(EXAMPLE_STRING_FIELD,PostgreSQLProvider)}
+  ${printField(EXAMPLE_STRING_FIELD, PostgreSQLProvider)}
 }
 
 model Order {
-  ${printField(EXAMPLE_STRING_FIELD,PostgreSQLProvider)}
+  ${printField(EXAMPLE_STRING_FIELD, PostgreSQLProvider)}
 }`,
     ],
     [

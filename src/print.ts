@@ -37,10 +37,10 @@ export async function print(schema: Schema): Promise<string> {
     statements.push(...schema.generators.map(printGenerator));
   }
   const providerType = schema.dataSource?.provider;
-  providerType &&
-    statements.push(
-      ...schema.models.map((model) => printModel(model, providerType))
-    );
+
+  statements.push(
+    ...schema.models.map((model) => printModel(model, providerType))
+  );
   statements.push(...schema.enums.map(printEnum));
   const schemaText = statements.join("\n");
   return formatSchema({ schema: schemaText });
@@ -122,7 +122,10 @@ export function printEnum(enum_: Enum): string {
  * @param model the model AST
  * @returns code of the model
  */
-export function printModel(model: Model, provider: DataSourceProvider): string {
+export function printModel(
+  model: Model,
+  provider: DataSourceProvider = DataSourceProvider.PostgreSQL
+): string {
   const fieldTexts = model.fields
     .map((field) => printField(field, provider))
     .join("\n");
@@ -163,7 +166,7 @@ function printScalarField(
   } else if (field.isId) {
     attributes.push("@id");
   }
-  if (isMongoDBProvider && field.name.includes("id")) {
+  if (isMongoDBProvider && field.name.includes("Id") && !field.isId) {
     attributes.push("@mongo.ObjectId");
   }
   if (field.isUnique) {
@@ -179,7 +182,6 @@ function printScalarField(
   const attributesText = attributes.join(" ");
   return [field.name, typeText, attributesText].filter(Boolean).join(" ");
 }
-
 function printScalarDefault(value: ScalarFieldDefault): string {
   // String, JSON and DateTime
   if (typeof value === "string") {
@@ -214,7 +216,7 @@ function printObjectField(
   }
   const attributes: string[] = [];
   if (!isEmpty(relation)) {
-    attributes.push(printRelation(relation, provider));
+    attributes.push(printRelation(relation, field.isList, provider));
   }
   const typeText = `${field.type}${printFieldModifiers(field)}`;
   const attributesText = attributes.join(" ");
@@ -234,6 +236,7 @@ function printFieldModifiers(field: BaseField): string {
 
 function printRelation(
   relation: Relation,
+  isList: boolean,
   provider: DataSourceProvider
 ): string {
   const isMongodbProvider = provider === DataSourceProvider.MongoDB;
@@ -242,10 +245,11 @@ function printRelation(
   const referencesText = relation.references
     ? `references: [${relation.references}]`
     : "";
-  const onDeleteFiled =
-    relation.references && isMongodbProvider ? "onDelete:NoAction" : "";
-  const onUpdateFiled =
-    relation.references && isMongodbProvider ? "onUpdate:NoAction" : "";
+
+  const isPrintOnDeleteAndOnUpdate =
+    relation.references && isMongodbProvider && !isList;
+  const onDeleteFiled = isPrintOnDeleteAndOnUpdate ? "onDelete:NoAction" : "";
+  const onUpdateFiled = isPrintOnDeleteAndOnUpdate ? "onUpdate:NoAction" : "";
 
   return `@relation(${[
     nameText,
