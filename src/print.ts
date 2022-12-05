@@ -161,10 +161,12 @@ function printScalarField(
   const attributes: string[] = [];
   const isMongoDBProvider = provider === DataSourceProvider.MongoDB;
 
-  if (field.isId && isMongoDBProvider) {
-    attributes.push(`@id @map("_id") @mongo.ObjectId`);
-  } else if (field.isId) {
-    attributes.push("@id");
+  if (field.isId) {
+    if (isMongoDBProvider) {
+      attributes.push(`@id @map("_id") @mongo.ObjectId`);
+    } else {
+      attributes.push("@id");
+    }
   }
   if (isMongoDBProvider && field.name.includes("Id") && !field.isId) {
     attributes.push("@mongo.ObjectId");
