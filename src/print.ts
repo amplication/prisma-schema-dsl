@@ -168,9 +168,11 @@ function printScalarField(
       attributes.push("@id");
     }
   }
-  if (isMongoDBProvider && field.name.includes("Id") && !field.isId) {
+
+  if (isMongoDBProvider && field.isForeignKey ) { 
     attributes.push("@mongo.ObjectId");
   }
+  
   if (field.isUnique) {
     attributes.push("@unique");
   }

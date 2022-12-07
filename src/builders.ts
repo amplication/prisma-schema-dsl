@@ -78,7 +78,8 @@ export function createScalarField(
   isId: boolean = false,
   isUpdatedAt: boolean = false,
   defaultValue: ScalarFieldDefault = null,
-  documentation?: string
+  documentation?: string,
+  isForeignKey:boolean = false
 ): ScalarField {
   validateName(name);
   validateScalarDefault(type, defaultValue);
@@ -94,6 +95,7 @@ export function createScalarField(
     isUpdatedAt,
     default: defaultValue,
     documentation,
+    isForeignKey
   };
 }
 
