@@ -12,6 +12,8 @@ import {
   CallExpression,
   ScalarFieldDefault,
   Enum,
+  DataSourceProvider,
+  ReferentialActions,
 } from "prisma-schema-dsl-types";
 import { formatSchema } from "@prisma/internals";
 
@@ -35,7 +37,11 @@ export async function print(schema: Schema): Promise<string> {
   if (schema.generators.length) {
     statements.push(...schema.generators.map(printGenerator));
   }
-  statements.push(...schema.models.map(printModel));
+  const providerType = schema.dataSource?.provider;
+
+  statements.push(
+    ...schema.models.map((model) => printModel(model, providerType))
+  );
   statements.push(...schema.enums.map(printEnum));
   const schemaText = statements.join("\n");
   return formatSchema({ schema: schemaText });
@@ -117,8 +123,13 @@ export function printEnum(enum_: Enum): string {
  * @param model the model AST
  * @returns code of the model
  */
-export function printModel(model: Model): string {
-  const fieldTexts = model.fields.map(printField).join("\n");
+export function printModel(
+  model: Model,
+  provider: DataSourceProvider = DataSourceProvider.PostgreSQL
+): string {
+  const fieldTexts = model.fields
+    .map((field) => printField(field, provider))
+    .join("\n");
   return withDocumentation(
     model.documentation,
     `model ${model.name} {\n${fieldTexts}\n}`
@@ -131,21 +142,38 @@ export function printModel(model: Model): string {
  * @param field the field AST
  * @returns code of the field
  */
-export function printField(field: ObjectField | ScalarField) {
+export function printField(
+  field: ObjectField | ScalarField,
+  provider: DataSourceProvider
+) {
   return withDocumentation(
     field.documentation,
     field.kind === FieldKind.Scalar
-      ? printScalarField(field)
+      ? printScalarField(field, provider)
       : printObjectField(field)
   );
 }
 
-function printScalarField(field: ScalarField): string {
+function printScalarField(
+  field: ScalarField,
+  provider: DataSourceProvider
+): string {
   const modifiersText = printFieldModifiers(field);
   const attributes: string[] = [];
+  const isMongoDBProvider = provider === DataSourceProvider.MongoDB;
+
   if (field.isId) {
-    attributes.push("@id");
+    if (isMongoDBProvider) {
+      attributes.push(`@id @map("_id") @mongo.ObjectId`);
+    } else {
+      attributes.push("@id");
+    }
   }
+
+  if (isMongoDBProvider && field.isForeignKey) {
+    attributes.push("@mongo.ObjectId");
+  }
+
   if (field.isUnique) {
     attributes.push("@unique");
   }
@@ -159,7 +187,6 @@ function printScalarField(field: ScalarField): string {
   const attributesText = attributes.join(" ");
   return [field.name, typeText, attributesText].filter(Boolean).join(" ");
 }
-
 function printScalarDefault(value: ScalarFieldDefault): string {
   // String, JSON and DateTime
   if (typeof value === "string") {
@@ -179,6 +206,7 @@ function printScalarDefault(value: ScalarFieldDefault): string {
 
 function printObjectField(field: ObjectField): string {
   const relation: Relation = {};
+
   if (field.relationName) {
     relation.name = field.relationName;
   }
@@ -190,7 +218,7 @@ function printObjectField(field: ObjectField): string {
   }
   const attributes: string[] = [];
   if (!isEmpty(relation)) {
-    attributes.push(printRelation(relation));
+    attributes.push(printRelation(relation, field));
   }
   const typeText = `${field.type}${printFieldModifiers(field)}`;
   const attributesText = attributes.join(" ");
@@ -208,13 +236,29 @@ function printFieldModifiers(field: BaseField): string {
   return modifiers.join("");
 }
 
-function printRelation(relation: Relation): string {
+function printRelation(relation: Relation, field: ObjectField): string {
   const nameText = relation.name ? `name: "${relation.name}"` : "";
   const fieldsText = relation.fields ? `fields: [${relation.fields}]` : "";
   const referencesText = relation.references
     ? `references: [${relation.references}]`
     : "";
-  return `@relation(${[nameText, fieldsText, referencesText]
+
+  const onDeleteAction =
+    field.relationOnDelete != ReferentialActions.NONE
+      ? `onDelete: ${field.relationOnDelete}`
+      : "";
+  const onUpdateAction =
+    field.relationOnUpdate != ReferentialActions.NONE
+      ? `onUpdate: ${field.relationOnUpdate}`
+      : "";
+
+  return `@relation(${[
+    nameText,
+    fieldsText,
+    referencesText,
+    onDeleteAction,
+    onUpdateAction,
+  ]
     .filter(Boolean)
     .join(", ")})`;
 }
