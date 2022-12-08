@@ -16,6 +16,7 @@ import {
   UUID,
   ScalarFieldDefault,
   Enum,
+  ReferentialActions,
 } from "prisma-schema-dsl-types";
 
 const NAME_REGEXP = /[A-Za-z][A-Za-z0-9_]*/;
@@ -79,7 +80,7 @@ export function createScalarField(
   isUpdatedAt: boolean = false,
   defaultValue: ScalarFieldDefault = null,
   documentation?: string,
-  isForeignKey:boolean = false
+  isForeignKey: boolean = false
 ): ScalarField {
   validateName(name);
   validateScalarDefault(type, defaultValue);
@@ -95,7 +96,7 @@ export function createScalarField(
     isUpdatedAt,
     default: defaultValue,
     documentation,
-    isForeignKey
+    isForeignKey,
   };
 }
 
@@ -180,7 +181,8 @@ export function createObjectField(
   relationName: string | null = null,
   relationFields: string[] = [],
   relationReferences: string[] = [],
-  relationOnDelete: "NONE" = "NONE",
+  relationOnDelete: ReferentialActions = ReferentialActions.NONE,
+  relationOnUpdate: ReferentialActions = ReferentialActions.NONE,
   documentation?: string
 ): ObjectField {
   validateName(name);
@@ -196,6 +198,7 @@ export function createObjectField(
     relationToFields: relationFields,
     relationToReferences: relationReferences,
     relationOnDelete,
+    relationOnUpdate,
     documentation,
   };
 }

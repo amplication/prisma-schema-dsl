@@ -13,6 +13,7 @@ import {
   ScalarFieldDefault,
   Enum,
   DataSourceProvider,
+  ReferentialActions,
 } from "prisma-schema-dsl-types";
 import { formatSchema } from "@prisma/internals";
 
@@ -149,7 +150,7 @@ export function printField(
     field.documentation,
     field.kind === FieldKind.Scalar
       ? printScalarField(field, provider)
-      : printObjectField(field, provider)
+      : printObjectField(field)
   );
 }
 
@@ -169,10 +170,10 @@ function printScalarField(
     }
   }
 
-  if (isMongoDBProvider && field.isForeignKey ) { 
+  if (isMongoDBProvider && field.isForeignKey) {
     attributes.push("@mongo.ObjectId");
   }
-  
+
   if (field.isUnique) {
     attributes.push("@unique");
   }
@@ -203,10 +204,7 @@ function printScalarDefault(value: ScalarFieldDefault): string {
   throw new Error(`Invalid value: ${value}`);
 }
 
-function printObjectField(
-  field: ObjectField,
-  provider: DataSourceProvider
-): string {
+function printObjectField(field: ObjectField): string {
   const relation: Relation = {};
 
   if (field.relationName) {
@@ -220,7 +218,7 @@ function printObjectField(
   }
   const attributes: string[] = [];
   if (!isEmpty(relation)) {
-    attributes.push(printRelation(relation, field.isList, provider));
+    attributes.push(printRelation(relation, field));
   }
   const typeText = `${field.type}${printFieldModifiers(field)}`;
   const attributesText = attributes.join(" ");
@@ -238,29 +236,28 @@ function printFieldModifiers(field: BaseField): string {
   return modifiers.join("");
 }
 
-function printRelation(
-  relation: Relation,
-  isList: boolean,
-  provider: DataSourceProvider
-): string {
-  const isMongodbProvider = provider === DataSourceProvider.MongoDB;
+function printRelation(relation: Relation, field: ObjectField): string {
   const nameText = relation.name ? `name: "${relation.name}"` : "";
   const fieldsText = relation.fields ? `fields: [${relation.fields}]` : "";
   const referencesText = relation.references
     ? `references: [${relation.references}]`
     : "";
 
-  const isPrintOnDeleteAndOnUpdate =
-    relation.references && isMongodbProvider && !isList;
-  const onDeleteFiled = isPrintOnDeleteAndOnUpdate ? "onDelete:NoAction" : "";
-  const onUpdateFiled = isPrintOnDeleteAndOnUpdate ? "onUpdate:NoAction" : "";
+  const onDeleteAction =
+    field.relationOnDelete != ReferentialActions.NONE
+      ? `onDelete: ${field.relationOnDelete}`
+      : "";
+  const onUpdateAction =
+    field.relationOnUpdate != ReferentialActions.NONE
+      ? `onUpdate: ${field.relationOnUpdate}`
+      : "";
 
   return `@relation(${[
     nameText,
     fieldsText,
     referencesText,
-    onDeleteFiled,
-    onUpdateFiled,
+    onDeleteAction,
+    onUpdateAction,
   ]
     .filter(Boolean)
     .join(", ")})`;
