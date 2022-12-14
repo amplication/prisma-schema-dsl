@@ -181,7 +181,9 @@ function printScalarField(
     attributes.push("@updatedAt");
   }
   if (field.default) {
-    attributes.push(`@default(${printScalarDefault(field.default)})`);
+    !isMongoDBProvider
+      ? attributes.push(`@default(${printScalarDefault(field.default)})`)
+      : attributes.push(`@default(auto())`);
   }
   const typeText = `${field.type}${modifiersText}`;
   const attributesText = attributes.join(" ");
