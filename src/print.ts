@@ -181,10 +181,14 @@ function printScalarField(
     attributes.push("@updatedAt");
   }
   if (field.default) {
-    !isMongoDBProvider &&
+    if (!isMongoDBProvider || !field.isId) {
       attributes.push(`@default(${printScalarDefault(field.default)})`);
-    isMongoDBProvider && field.isId && attributes.push(`@default(auto())`);
+    }
+    if (isMongoDBProvider && field.isId) {
+      attributes.push(`@default(auto())`);
+    }
   }
+
   const typeText = `${field.type}${modifiersText}`;
   const attributesText = attributes.join(" ");
   return [field.name, typeText, attributesText].filter(Boolean).join(" ");
