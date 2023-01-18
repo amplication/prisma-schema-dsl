@@ -62,7 +62,7 @@ export function printDataSource(dataSource: DataSource): string {
 }
 
 function printDataSourceURL(url: string | DataSourceURLEnv): string {
-  return url instanceof DataSourceURLEnv ? `env("${url.name}")` : `"${url}"`;
+  return typeof url === "string" ? `"${url}"` : `env("${url.name}")`;
 }
 
 export function printGenerator(generator: Generator): string {
