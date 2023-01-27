@@ -2,6 +2,7 @@ import isEmpty from "lodash.isempty";
 import {
   Schema,
   DataSource,
+  isDataSourceURLEnv,
   DataSourceURLEnv,
   Model,
   ObjectField,
@@ -10,6 +11,7 @@ import {
   BaseField,
   Generator,
   CallExpression,
+  isCallExpression,
   ScalarFieldDefault,
   Enum,
   DataSourceProvider,
@@ -62,7 +64,7 @@ export function printDataSource(dataSource: DataSource): string {
 }
 
 function printDataSourceURL(url: string | DataSourceURLEnv): string {
-  return typeof url === "string" ? `"${url}"` : `env("${url.name}")`;
+  return isDataSourceURLEnv(url) ? `env("${url.name}")` : `"${url}"`;
 }
 
 export function printGenerator(generator: Generator): string {
@@ -206,7 +208,7 @@ function printScalarDefault(value: ScalarFieldDefault): string {
   if (typeof value === "number") {
     return String(value);
   }
-  if (value instanceof CallExpression) {
+  if (isCallExpression(value)) {
     return `${value.callee}()`;
   }
   throw new Error(`Invalid value: ${value}`);
