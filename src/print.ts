@@ -130,9 +130,11 @@ export function printModel(
   const fieldTexts = model.fields
     .map((field) => printField(field, provider))
     .join("\n");
+  const map = model.map ? printModelMap(model.map, true) : '';
+
   return withDocumentation(
     model.documentation,
-    `model ${model.name} {\n${fieldTexts}\n}`
+    `model ${model.name} {\n${fieldTexts}${map}\n}`
   );
 }
 
@@ -267,4 +269,10 @@ function printRelation(relation: Relation, field: ObjectField): string {
   ]
     .filter(Boolean)
     .join(", ")})`;
+}
+
+export function printModelMap(name: string, prependNewLines = false) {
+  const prefix = prependNewLines ? '\n\n': '';
+
+  return `${prefix}@@map("${name}")`;
 }
