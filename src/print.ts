@@ -130,7 +130,7 @@ export function printModel(
   const fieldTexts = model.fields
     .map((field) => printField(field, provider))
     .join("\n");
-  const map = model.map ? printModelMap(model.map, true) : '';
+  const map = model.map ? printModelMap(model.map, true) : "";
 
   return withDocumentation(
     model.documentation,
@@ -272,7 +272,7 @@ function printRelation(relation: Relation, field: ObjectField): string {
 }
 
 export function printModelMap(name: string, prependNewLines = false) {
-  const prefix = prependNewLines ? '\n\n': '';
+  const prefix = prependNewLines ? "\n\n" : "";
 
   return `${prefix}@@map("${name}")`;
 }
