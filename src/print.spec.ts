@@ -14,6 +14,7 @@ import {
   printGenerator,
   printEnum,
   printDocumentation,
+  printModelMap,
 } from "./print";
 import {
   ScalarType,
@@ -62,6 +63,7 @@ const EXAMPLE_DATA_SOURCE_NAME = "exampleDataSource";
 const EXAMPLE_DATA_SOURCE_PROVIDER = DataSourceProvider.MySQL;
 const EXAMPLE_DATA_SOURCE_URL = "mysql://example.com";
 const EXAMPLE_RELATION_NAME = "exampleRelationName";
+const EXAMPLE_MODEL_MAP = "ExampleMappedName";
 const POSTGRES_SQL_PROVIDER = DataSourceProvider.PostgreSQL;
 
 describe("printEnum", () => {
@@ -322,6 +324,20 @@ ${printField(EXAMPLE_STRING_FIELD, POSTGRES_SQL_PROVIDER)}
       `model ${EXAMPLE_MODEL_NAME} {
 ${printField(EXAMPLE_STRING_FIELD, POSTGRES_SQL_PROVIDER)}
 ${printField(EXAMPLE_OTHER_STRING_FIELD, POSTGRES_SQL_PROVIDER)}
+}`,
+    ],
+    [
+      "Single field and map",
+      createModel(
+        EXAMPLE_MODEL_NAME,
+        [EXAMPLE_STRING_FIELD],
+        "",
+        EXAMPLE_MODEL_MAP
+      ),
+      `model ${EXAMPLE_MODEL_NAME} {
+${printField(EXAMPLE_STRING_FIELD, POSTGRES_SQL_PROVIDER)}
+
+${printModelMap(EXAMPLE_MODEL_MAP)}
 }`,
     ],
   ];

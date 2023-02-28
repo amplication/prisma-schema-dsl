@@ -56,13 +56,15 @@ export function createEnum(
 export function createModel(
   name: string,
   fields: Array<ScalarField | ObjectField>,
-  documentation?: string
+  documentation?: string,
+  map?: string
 ): Model {
   validateName(name);
   return {
     name,
     fields,
     documentation,
+    map,
   };
 }
 
