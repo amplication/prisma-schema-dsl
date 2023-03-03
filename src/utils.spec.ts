@@ -1,7 +1,7 @@
 import { parseArgs } from "./utils";
 
 describe("parseArgs", () => {
-  test("should be able to parse variadic arguments #1", () => {
+  test("should be able to parse variadic arguments", () => {
     type MyObject = {
       success: boolean;
       type: string;
