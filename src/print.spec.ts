@@ -173,7 +173,7 @@ describe("printField", () => {
         false,
         false,
         false,
-        {callee: AUTO_INCREMENT}
+        { callee: AUTO_INCREMENT }
       ),
       `${EXAMPLE_FIELD_NAME} ${ScalarType.Int} @default(autoincrement())`,
     ],
@@ -187,7 +187,7 @@ describe("printField", () => {
         false,
         false,
         false,
-        {callee: UUID}
+        { callee: UUID }
       ),
       `${EXAMPLE_FIELD_NAME} ${ScalarType.String} @default(uuid())`,
     ],
@@ -201,7 +201,7 @@ describe("printField", () => {
         false,
         false,
         false,
-        {callee: CUID}
+        { callee: CUID }
       ),
       `${EXAMPLE_FIELD_NAME} ${ScalarType.String} @default(cuid())`,
     ],
@@ -215,7 +215,7 @@ describe("printField", () => {
         false,
         false,
         false,
-        {callee: NOW}
+        { callee: NOW }
       ),
       `${EXAMPLE_FIELD_NAME} ${ScalarType.DateTime} @default(now())`,
     ],
