@@ -1,4 +1,4 @@
-import { ScalarType } from "prisma-schema-dsl-types";
+import { ScalarType } from "@pmaltese/prisma-schema-dsl-types";
 import {
   createScalarField,
   createObjectField,

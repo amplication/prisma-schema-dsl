@@ -15,7 +15,7 @@ import {
   Enum,
   DataSourceProvider,
   ReferentialActions,
-} from "prisma-schema-dsl-types";
+} from "@pmaltese/prisma-schema-dsl-types";
 import { formatSchema } from "@prisma/internals";
 
 type Relation = {
