@@ -17,7 +17,7 @@ import {
   Enum,
   ReferentialActions,
   isCallExpression,
-} from "prisma-schema-dsl-types";
+} from "@pmaltese/prisma-schema-dsl-types";
 
 const NAME_REGEXP = /[A-Za-z][A-Za-z0-9_]*/;
 export const OPTIONAL_LIST_ERROR_MESSAGE =
