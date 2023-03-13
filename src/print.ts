@@ -10,7 +10,6 @@ import {
   FieldKind,
   BaseField,
   Generator,
-  CallExpression,
   isCallExpression,
   ScalarFieldDefault,
   Enum,
