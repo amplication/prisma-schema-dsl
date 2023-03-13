@@ -24,13 +24,13 @@ import {
   DataSourceProvider,
   Model,
   Generator,
-  CallExpression,
   AUTO_INCREMENT,
   UUID,
   CUID,
   NOW,
   Enum,
 } from "prisma-schema-dsl-types";
+import { CallExpression } from "callExpression";
 
 const EXAMPLE_DOCUMENTATION = "Example Documentation";
 const EXAMPLE_ENUM_NAME = "ExampleEnumName";
