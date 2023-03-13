@@ -24,7 +24,6 @@ import {
   DataSourceProvider,
   Model,
   Generator,
-  CallExpression,
   AUTO_INCREMENT,
   UUID,
   CUID,
@@ -174,7 +173,7 @@ describe("printField", () => {
         false,
         false,
         false,
-        new CallExpression(AUTO_INCREMENT)
+        { callee: AUTO_INCREMENT }
       ),
       `${EXAMPLE_FIELD_NAME} ${ScalarType.Int} @default(autoincrement())`,
     ],
@@ -188,7 +187,7 @@ describe("printField", () => {
         false,
         false,
         false,
-        new CallExpression(UUID)
+        { callee: UUID }
       ),
       `${EXAMPLE_FIELD_NAME} ${ScalarType.String} @default(uuid())`,
     ],
@@ -202,7 +201,7 @@ describe("printField", () => {
         false,
         false,
         false,
-        new CallExpression(CUID)
+        { callee: CUID }
       ),
       `${EXAMPLE_FIELD_NAME} ${ScalarType.String} @default(cuid())`,
     ],
@@ -216,7 +215,7 @@ describe("printField", () => {
         false,
         false,
         false,
-        new CallExpression(NOW)
+        { callee: NOW }
       ),
       `${EXAMPLE_FIELD_NAME} ${ScalarType.DateTime} @default(now())`,
     ],

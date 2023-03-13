@@ -9,7 +9,6 @@ import {
   DataSourceProvider,
   DataSourceURLEnv,
   Generator,
-  CallExpression,
   CUID,
   AUTO_INCREMENT,
   NOW,
@@ -17,6 +16,7 @@ import {
   ScalarFieldDefault,
   Enum,
   ReferentialActions,
+  isCallExpression,
 } from "prisma-schema-dsl-types";
 
 const NAME_REGEXP = /[A-Za-z][A-Za-z0-9_]*/;
@@ -111,7 +111,7 @@ function validateScalarDefault(type: ScalarType, value: ScalarFieldDefault) {
       if (
         !(
           typeof value === "string" ||
-          (value instanceof CallExpression &&
+          (isCallExpression(value) &&
             (value.callee === UUID || value.callee === CUID))
         )
       ) {
@@ -131,7 +131,7 @@ function validateScalarDefault(type: ScalarType, value: ScalarFieldDefault) {
       if (
         !(
           typeof value === "number" ||
-          (value instanceof CallExpression && value.callee === AUTO_INCREMENT)
+          (isCallExpression(value) && value.callee === AUTO_INCREMENT)
         )
       ) {
         throw new Error(
@@ -150,7 +150,7 @@ function validateScalarDefault(type: ScalarType, value: ScalarFieldDefault) {
       if (
         !(
           typeof value === "string" ||
-          (value instanceof CallExpression && value.callee === NOW)
+          (isCallExpression(value) && value.callee === NOW)
         )
       ) {
         throw new Error(
