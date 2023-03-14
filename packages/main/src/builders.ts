@@ -1,22 +1,22 @@
 import {
+  AUTO_INCREMENT,
+  CUID,
   DataSource,
-  Model,
-  Schema,
-  ScalarField,
-  ObjectField,
-  ScalarType,
-  FieldKind,
   DataSourceProvider,
   DataSourceURLEnv,
-  Generator,
-  CUID,
-  AUTO_INCREMENT,
-  NOW,
-  UUID,
-  ScalarFieldDefault,
   Enum,
-  ReferentialActions,
+  FieldKind,
+  Generator,
   isCallExpression,
+  Model,
+  NOW,
+  ObjectField,
+  ReferentialActions,
+  ScalarField,
+  ScalarFieldDefault,
+  ScalarType,
+  Schema,
+  UUID,
 } from "@pmaltese/prisma-schema-dsl-types";
 
 const NAME_REGEXP = /[A-Za-z][A-Za-z0-9_]*/;
@@ -24,12 +24,17 @@ export const OPTIONAL_LIST_ERROR_MESSAGE =
   "Invalid modifiers: You cannot combine isRequired: false and isList: true - optional lists are not supported.";
 
 /** Creates a schema AST object */
-export function createSchema(
-  models: Model[],
-  enums: Enum[],
-  dataSource?: DataSource,
-  generators: Generator[] = []
-): Schema {
+export function createSchema({
+  models,
+  enums,
+  dataSource,
+  generators = [],
+}: {
+  models: Model[];
+  enums: Enum[];
+  dataSource?: DataSource;
+  generators?: Generator[];
+}): Schema {
   return {
     dataSource,
     generators,
@@ -39,11 +44,15 @@ export function createSchema(
 }
 
 /** Creates an enum AST object */
-export function createEnum(
-  name: string,
-  values: string[],
-  documentation?: string
-): Enum {
+export function createEnum({
+  name,
+  values,
+  documentation,
+}: {
+  name: string;
+  values: string[];
+  documentation?: string;
+}): Enum {
   validateName(name);
   return {
     name,
@@ -53,12 +62,17 @@ export function createEnum(
 }
 
 /** Creates a model AST object */
-export function createModel(
-  name: string,
-  fields: Array<ScalarField | ObjectField>,
-  documentation?: string,
-  map?: string
-): Model {
+export function createModel({
+  name,
+  fields,
+  documentation,
+  map,
+}: {
+  name: string;
+  fields: Array<ScalarField | ObjectField>;
+  documentation?: string;
+  map?: string;
+}): Model {
   validateName(name);
   return {
     name,
@@ -72,18 +86,29 @@ export function createModel(
  * Creates a scalar field AST object
  * Validates given name argument
  */
-export function createScalarField(
-  name: string,
-  type: ScalarType,
-  isList: boolean = false,
-  isRequired: boolean = false,
-  isUnique: boolean = false,
-  isId: boolean = false,
-  isUpdatedAt: boolean = false,
-  defaultValue: ScalarFieldDefault = null,
-  documentation?: string,
-  isForeignKey: boolean = false
-): ScalarField {
+export function createScalarField({
+  name,
+  type,
+  isList = false,
+  isRequired = false,
+  isUnique = false,
+  isId = false,
+  isUpdatedAt = false,
+  defaultValue = null,
+  documentation,
+  isForeignKey = false,
+}: {
+  name: string;
+  type: ScalarType;
+  isList?: boolean;
+  isRequired?: boolean;
+  isUnique?: boolean;
+  isId?: boolean;
+  isUpdatedAt?: boolean;
+  defaultValue?: ScalarFieldDefault;
+  documentation?: string;
+  isForeignKey?: boolean;
+}): ScalarField {
   validateName(name);
   validateScalarDefault(type, defaultValue);
   validateModifiers(isRequired, isList);
@@ -175,18 +200,29 @@ function validateScalarDefault(type: ScalarType, value: ScalarFieldDefault) {
  * Creates an object field AST object
  * Validates given name argument
  */
-export function createObjectField(
-  name: string,
-  type: string,
-  isList: boolean = false,
-  isRequired: boolean = false,
-  relationName: string | null = null,
-  relationFields: string[] = [],
-  relationReferences: string[] = [],
-  relationOnDelete: ReferentialActions = ReferentialActions.NONE,
-  relationOnUpdate: ReferentialActions = ReferentialActions.NONE,
-  documentation?: string
-): ObjectField {
+export function createObjectField({
+  name,
+  type,
+  isList = false,
+  isRequired = false,
+  relationName = null,
+  relationFields = [],
+  relationReferences = [],
+  relationOnDelete = ReferentialActions.NONE,
+  relationOnUpdate = ReferentialActions.NONE,
+  documentation,
+}: {
+  name: string;
+  type: string;
+  isList?: boolean;
+  isRequired?: boolean;
+  relationName?: string | null;
+  relationFields?: string[];
+  relationReferences?: string[];
+  relationOnDelete?: ReferentialActions;
+  relationOnUpdate?: ReferentialActions;
+  documentation?: string;
+}): ObjectField {
   validateName(name);
   validateModifiers(isRequired, isList);
 
@@ -220,11 +256,15 @@ function validateModifiers(isRequired: boolean, isList: boolean): void {
 }
 
 /** Creates a data source AST object */
-export function createDataSource(
-  name: string,
-  provider: DataSourceProvider,
-  url: string | DataSourceURLEnv
-): DataSource {
+export function createDataSource({
+  name,
+  provider,
+  url,
+}: {
+  name: string;
+  provider: DataSourceProvider;
+  url: string | DataSourceURLEnv;
+}): DataSource {
   return {
     name,
     provider,
@@ -233,12 +273,17 @@ export function createDataSource(
 }
 
 /** Creates a generator AST object */
-export function createGenerator(
-  name: string,
-  provider: string,
-  output: string | null = null,
-  binaryTargets: string[] = []
-): Generator {
+export function createGenerator({
+  name,
+  provider,
+  output = null,
+  binaryTargets = [],
+}: {
+  name: string;
+  provider: string;
+  output?: string | null;
+  binaryTargets?: string[];
+}): Generator {
   return {
     name,
     provider,

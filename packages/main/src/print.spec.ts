@@ -1,34 +1,34 @@
 import {
-  createSchema,
-  createModel,
-  createScalarField,
-  createObjectField,
   createDataSource,
-  createGenerator,
   createEnum,
+  createGenerator,
+  createModel,
+  createObjectField,
+  createScalarField,
+  createSchema,
 } from "./builders";
 import {
   print,
-  printField,
-  printModel,
-  printGenerator,
-  printEnum,
   printDocumentation,
+  printEnum,
+  printField,
+  printGenerator,
+  printModel,
   printModelMap,
 } from "./print";
 import {
-  ScalarType,
-  Schema,
+  AUTO_INCREMENT,
+  CUID,
+  DataSourceProvider,
+  Enum,
+  Generator,
+  Model,
+  NOW,
   ObjectField,
   ScalarField,
-  DataSourceProvider,
-  Model,
-  Generator,
-  AUTO_INCREMENT,
+  ScalarType,
+  Schema,
   UUID,
-  CUID,
-  NOW,
-  Enum,
 } from "@pmaltese/prisma-schema-dsl-types";
 
 const EXAMPLE_DOCUMENTATION = "Example Documentation";
@@ -39,21 +39,24 @@ const EXAMPLE_FIELD_NAME = "exampleFieldName";
 const EXAMPLE_RELATION_FIELD_NAME = "exampleRelationFieldName";
 const EXAMPLE_RELATION_REFERENCE_FIELD_NAME =
   "exampleRelationReferenceFieldName";
-const EXAMPLE_STRING_FIELD = createScalarField(
-  EXAMPLE_FIELD_NAME,
-  ScalarType.String,
-  false,
-  true
-);
-const EXAMPLE_OTHER_STRING_FIELD = createScalarField(
-  "exampleOtherFieldName",
-  ScalarType.String,
-  false,
-  true
-);
+const EXAMPLE_STRING_FIELD = createScalarField({
+  name: EXAMPLE_FIELD_NAME,
+  type: ScalarType.String,
+  isList: false,
+  isRequired: true,
+});
+const EXAMPLE_OTHER_STRING_FIELD = createScalarField({
+  name: "exampleOtherFieldName",
+  type: ScalarType.String,
+  isList: false,
+  isRequired: true,
+});
 const EXAMPLE_OBJECT_NAME = "ExampleObjectName";
 const EXAMPLE_MODEL_NAME = "ExampleModelName";
-const EXAMPLE_MODEL = createModel(EXAMPLE_MODEL_NAME, [EXAMPLE_STRING_FIELD]);
+const EXAMPLE_MODEL = createModel({
+  name: EXAMPLE_MODEL_NAME,
+  fields: [EXAMPLE_STRING_FIELD],
+});
 const EXAMPLE_GENERATOR_NAME = "exampleGeneratorName";
 const EXAMPLE_GENERATOR_PROVIDER = "exampleGeneratorProvider";
 const EXAMPLE_GENERATOR_OUTPUT = "example-generator-output";
@@ -69,26 +72,29 @@ describe("printEnum", () => {
   const cases: Array<[string, Enum, string]> = [
     [
       "Single value",
-      createEnum(EXAMPLE_ENUM_NAME, [EXAMPLE_ENUM_VALUE]),
+      createEnum({
+        name: EXAMPLE_ENUM_NAME,
+        values: [EXAMPLE_ENUM_VALUE],
+      }),
       `enum ${EXAMPLE_ENUM_NAME} {\n${EXAMPLE_ENUM_VALUE}\n}`,
     ],
     [
       "Single value with documentation",
-      createEnum(
-        EXAMPLE_ENUM_NAME,
-        [EXAMPLE_ENUM_VALUE],
-        EXAMPLE_DOCUMENTATION
-      ),
+      createEnum({
+        name: EXAMPLE_ENUM_NAME,
+        values: [EXAMPLE_ENUM_VALUE],
+        documentation: EXAMPLE_DOCUMENTATION,
+      }),
       `${printDocumentation(
         EXAMPLE_DOCUMENTATION
       )}\nenum ${EXAMPLE_ENUM_NAME} {\n${EXAMPLE_ENUM_VALUE}\n}`,
     ],
     [
       "Two values",
-      createEnum(EXAMPLE_ENUM_NAME, [
-        EXAMPLE_ENUM_VALUE,
-        EXAMPLE_OTHER_ENUM_VALUE,
-      ]),
+      createEnum({
+        name: EXAMPLE_ENUM_NAME,
+        values: [EXAMPLE_ENUM_VALUE, EXAMPLE_OTHER_ENUM_VALUE],
+      }),
       `enum ${EXAMPLE_ENUM_NAME} {\n${EXAMPLE_ENUM_VALUE}\n${EXAMPLE_OTHER_ENUM_VALUE}\n}`,
     ],
   ];
@@ -106,185 +112,205 @@ describe("printField", () => {
     ],
     [
       "Simple string field with documentation",
-      createScalarField(
-        EXAMPLE_FIELD_NAME,
-        ScalarType.String,
-        false,
-        true,
-        false,
-        false,
-        false,
-        undefined,
-        EXAMPLE_DOCUMENTATION
-      ),
+      createScalarField({
+        name: EXAMPLE_FIELD_NAME,
+        type: ScalarType.String,
+        isList: false,
+        isRequired: true,
+        isUnique: false,
+        isId: false,
+        isUpdatedAt: false,
+        defaultValue: undefined,
+        documentation: EXAMPLE_DOCUMENTATION,
+      }),
       `${printDocumentation(EXAMPLE_DOCUMENTATION)}\n${EXAMPLE_FIELD_NAME} ${
         ScalarType.String
       }`,
     ],
     [
       "Simple float field",
-      createScalarField(EXAMPLE_FIELD_NAME, ScalarType.Float, false, true),
+      createScalarField({
+        name: EXAMPLE_FIELD_NAME,
+        type: ScalarType.Float,
+        isList: false,
+        isRequired: true,
+      }),
       `${EXAMPLE_FIELD_NAME} ${ScalarType.Float}`,
     ],
     [
       "Simple optional string field",
-      createScalarField(EXAMPLE_FIELD_NAME, ScalarType.String, false, false),
+      createScalarField({
+        name: EXAMPLE_FIELD_NAME,
+        type: ScalarType.String,
+        isRequired: false,
+        isUnique: false,
+      }),
       `${EXAMPLE_FIELD_NAME} ${ScalarType.String}?`,
     ],
     [
       "Simple string array field",
-      createScalarField(EXAMPLE_FIELD_NAME, ScalarType.String, true, true),
+      createScalarField({
+        name: EXAMPLE_FIELD_NAME,
+        type: ScalarType.String,
+        isList: true,
+        isRequired: true,
+      }),
       `${EXAMPLE_FIELD_NAME} ${ScalarType.String}[]`,
     ],
     [
       "Simple date-time field",
-      createScalarField(
-        EXAMPLE_FIELD_NAME,
-        ScalarType.DateTime,
-        false,
-        true,
-        false,
-        false,
-        false
-      ),
+      createScalarField({
+        name: EXAMPLE_FIELD_NAME,
+        type: ScalarType.DateTime,
+        isList: false,
+        isRequired: true,
+        isUnique: false,
+        isId: false,
+        isUpdatedAt: false,
+      }),
       `${EXAMPLE_FIELD_NAME} ${ScalarType.DateTime}`,
     ],
     [
       "Int field with default",
-      createScalarField(
-        EXAMPLE_FIELD_NAME,
-        ScalarType.Int,
-        false,
-        true,
-        false,
-        false,
-        false,
-        42
-      ),
+      createScalarField({
+        name: EXAMPLE_FIELD_NAME,
+        type: ScalarType.Int,
+        isList: false,
+        isRequired: true,
+        isUnique: false,
+        isId: false,
+        isUpdatedAt: false,
+        defaultValue: 42,
+      }),
       `${EXAMPLE_FIELD_NAME} ${ScalarType.Int} @default(42)`,
     ],
     [
       "Int field with autoincrement()",
-      createScalarField(
-        EXAMPLE_FIELD_NAME,
-        ScalarType.Int,
-        false,
-        true,
-        false,
-        false,
-        false,
-        { callee: AUTO_INCREMENT }
-      ),
+      createScalarField({
+        name: EXAMPLE_FIELD_NAME,
+        type: ScalarType.Int,
+        isList: false,
+        isRequired: true,
+        isUnique: false,
+        isId: false,
+        isUpdatedAt: false,
+        defaultValue: { callee: AUTO_INCREMENT },
+      }),
       `${EXAMPLE_FIELD_NAME} ${ScalarType.Int} @default(autoincrement())`,
     ],
     [
       "String field with uuid()",
-      createScalarField(
-        EXAMPLE_FIELD_NAME,
-        ScalarType.String,
-        false,
-        true,
-        false,
-        false,
-        false,
-        { callee: UUID }
-      ),
+      createScalarField({
+        name: EXAMPLE_FIELD_NAME,
+        type: ScalarType.String,
+        isList: false,
+        isRequired: true,
+        isUnique: false,
+        isId: false,
+        isUpdatedAt: false,
+        defaultValue: { callee: UUID },
+      }),
       `${EXAMPLE_FIELD_NAME} ${ScalarType.String} @default(uuid())`,
     ],
     [
       "String field with cuid()",
-      createScalarField(
-        EXAMPLE_FIELD_NAME,
-        ScalarType.String,
-        false,
-        true,
-        false,
-        false,
-        false,
-        { callee: CUID }
-      ),
+      createScalarField({
+        name: EXAMPLE_FIELD_NAME,
+        type: ScalarType.String,
+        isList: false,
+        isRequired: true,
+        isUnique: false,
+        isId: false,
+        isUpdatedAt: false,
+        defaultValue: { callee: CUID },
+      }),
       `${EXAMPLE_FIELD_NAME} ${ScalarType.String} @default(cuid())`,
     ],
     [
       "Date-time field with now()",
-      createScalarField(
-        EXAMPLE_FIELD_NAME,
-        ScalarType.DateTime,
-        false,
-        true,
-        false,
-        false,
-        false,
-        { callee: NOW }
-      ),
+      createScalarField({
+        name: EXAMPLE_FIELD_NAME,
+        type: ScalarType.DateTime,
+        isList: false,
+        isRequired: true,
+        isUnique: false,
+        isId: false,
+        isUpdatedAt: false,
+        defaultValue: { callee: NOW },
+      }),
       `${EXAMPLE_FIELD_NAME} ${ScalarType.DateTime} @default(now())`,
     ],
     [
       "Boolean field with default value",
-      createScalarField(
-        EXAMPLE_FIELD_NAME,
-        ScalarType.Boolean,
-        false,
-        true,
-        false,
-        false,
-        false,
-        true
-      ),
+      createScalarField({
+        name: EXAMPLE_FIELD_NAME,
+        type: ScalarType.Boolean,
+        isList: false,
+        isRequired: true,
+        isUnique: false,
+        isId: false,
+        isUpdatedAt: false,
+        defaultValue: true,
+      }),
       `${EXAMPLE_FIELD_NAME} ${ScalarType.Boolean} @default(true)`,
     ],
     [
       "Simple object field",
-      createObjectField(EXAMPLE_FIELD_NAME, EXAMPLE_OBJECT_NAME, false, true),
+      createObjectField({
+        name: EXAMPLE_FIELD_NAME,
+        type: EXAMPLE_OBJECT_NAME,
+        isList: false,
+        isRequired: true,
+      }),
       `${EXAMPLE_FIELD_NAME} ${EXAMPLE_OBJECT_NAME}`,
     ],
     [
       "Object field with relation",
-      createObjectField(
-        EXAMPLE_FIELD_NAME,
-        EXAMPLE_OBJECT_NAME,
-        false,
-        true,
-        EXAMPLE_RELATION_NAME
-      ),
+      createObjectField({
+        name: EXAMPLE_FIELD_NAME,
+        type: EXAMPLE_OBJECT_NAME,
+        isList: false,
+        isRequired: true,
+        relationName: EXAMPLE_RELATION_NAME,
+      }),
       `${EXAMPLE_FIELD_NAME} ${EXAMPLE_OBJECT_NAME} @relation(name: "${EXAMPLE_RELATION_NAME}")`,
     ],
     [
       "Object field with fields",
-      createObjectField(
-        EXAMPLE_FIELD_NAME,
-        EXAMPLE_OBJECT_NAME,
-        false,
-        true,
-        null,
-        [EXAMPLE_RELATION_FIELD_NAME]
-      ),
+      createObjectField({
+        name: EXAMPLE_FIELD_NAME,
+        type: EXAMPLE_OBJECT_NAME,
+        isList: false,
+        isRequired: true,
+        relationName: null,
+        relationFields: [EXAMPLE_RELATION_FIELD_NAME],
+      }),
       `${EXAMPLE_FIELD_NAME} ${EXAMPLE_OBJECT_NAME} @relation(fields: [${EXAMPLE_RELATION_FIELD_NAME}])`,
     ],
     [
       "Object field with references",
-      createObjectField(
-        EXAMPLE_FIELD_NAME,
-        EXAMPLE_OBJECT_NAME,
-        false,
-        true,
-        null,
-        [],
-        [EXAMPLE_RELATION_REFERENCE_FIELD_NAME]
-      ),
+      createObjectField({
+        name: EXAMPLE_FIELD_NAME,
+        type: EXAMPLE_OBJECT_NAME,
+        isList: false,
+        isRequired: true,
+        relationName: null,
+        relationFields: [],
+        relationReferences: [EXAMPLE_RELATION_REFERENCE_FIELD_NAME],
+      }),
       `${EXAMPLE_FIELD_NAME} ${EXAMPLE_OBJECT_NAME} @relation(references: [${EXAMPLE_RELATION_REFERENCE_FIELD_NAME}])`,
     ],
     [
       "Object field with full relation",
-      createObjectField(
-        EXAMPLE_FIELD_NAME,
-        EXAMPLE_OBJECT_NAME,
-        false,
-        true,
-        EXAMPLE_RELATION_NAME,
-        [EXAMPLE_RELATION_FIELD_NAME],
-        [EXAMPLE_RELATION_REFERENCE_FIELD_NAME]
-      ),
+      createObjectField({
+        name: EXAMPLE_FIELD_NAME,
+        type: EXAMPLE_OBJECT_NAME,
+        isList: false,
+        isRequired: true,
+        relationName: EXAMPLE_RELATION_NAME,
+        relationFields: [EXAMPLE_RELATION_FIELD_NAME],
+        relationReferences: [EXAMPLE_RELATION_REFERENCE_FIELD_NAME],
+      }),
       `${EXAMPLE_FIELD_NAME} ${EXAMPLE_OBJECT_NAME} @relation(name: "${EXAMPLE_RELATION_NAME}", fields: [${EXAMPLE_RELATION_FIELD_NAME}], references: [${EXAMPLE_RELATION_REFERENCE_FIELD_NAME}])`,
     ],
   ];
@@ -297,18 +323,21 @@ describe("printModel", () => {
   const cases: Array<[string, Model, string]> = [
     [
       "Single field",
-      createModel(EXAMPLE_MODEL_NAME, [EXAMPLE_STRING_FIELD]),
+      createModel({
+        name: EXAMPLE_MODEL_NAME,
+        fields: [EXAMPLE_STRING_FIELD],
+      }),
       `model ${EXAMPLE_MODEL_NAME} {
 ${printField(EXAMPLE_STRING_FIELD, POSTGRES_SQL_PROVIDER)}
 }`,
     ],
     [
       "Single field and documentation",
-      createModel(
-        EXAMPLE_MODEL_NAME,
-        [EXAMPLE_STRING_FIELD],
-        EXAMPLE_DOCUMENTATION
-      ),
+      createModel({
+        name: EXAMPLE_MODEL_NAME,
+        fields: [EXAMPLE_STRING_FIELD],
+        documentation: EXAMPLE_DOCUMENTATION,
+      }),
       `${printDocumentation(EXAMPLE_DOCUMENTATION)}
 model ${EXAMPLE_MODEL_NAME} {
 ${printField(EXAMPLE_STRING_FIELD, POSTGRES_SQL_PROVIDER)}
@@ -316,10 +345,10 @@ ${printField(EXAMPLE_STRING_FIELD, POSTGRES_SQL_PROVIDER)}
     ],
     [
       "Two fields",
-      createModel(EXAMPLE_MODEL_NAME, [
-        EXAMPLE_STRING_FIELD,
-        EXAMPLE_OTHER_STRING_FIELD,
-      ]),
+      createModel({
+        name: EXAMPLE_MODEL_NAME,
+        fields: [EXAMPLE_STRING_FIELD, EXAMPLE_OTHER_STRING_FIELD],
+      }),
       `model ${EXAMPLE_MODEL_NAME} {
 ${printField(EXAMPLE_STRING_FIELD, POSTGRES_SQL_PROVIDER)}
 ${printField(EXAMPLE_OTHER_STRING_FIELD, POSTGRES_SQL_PROVIDER)}
@@ -327,12 +356,12 @@ ${printField(EXAMPLE_OTHER_STRING_FIELD, POSTGRES_SQL_PROVIDER)}
     ],
     [
       "Single field and map",
-      createModel(
-        EXAMPLE_MODEL_NAME,
-        [EXAMPLE_STRING_FIELD],
-        "",
-        EXAMPLE_MODEL_MAP
-      ),
+      createModel({
+        name: EXAMPLE_MODEL_NAME,
+        fields: [EXAMPLE_STRING_FIELD],
+        documentation: "",
+        map: EXAMPLE_MODEL_MAP,
+      }),
       `model ${EXAMPLE_MODEL_NAME} {
 ${printField(EXAMPLE_STRING_FIELD, POSTGRES_SQL_PROVIDER)}
 
@@ -349,18 +378,21 @@ describe("printGenerator", () => {
   const cases: Array<[string, Generator, string]> = [
     [
       "Name and provider only",
-      createGenerator(EXAMPLE_GENERATOR_NAME, EXAMPLE_GENERATOR_PROVIDER),
+      createGenerator({
+        name: EXAMPLE_GENERATOR_NAME,
+        provider: EXAMPLE_GENERATOR_PROVIDER,
+      }),
       `generator ${EXAMPLE_GENERATOR_NAME} {
   provider = "${EXAMPLE_GENERATOR_PROVIDER}"
 }`,
     ],
     [
       "With output",
-      createGenerator(
-        EXAMPLE_GENERATOR_NAME,
-        EXAMPLE_GENERATOR_PROVIDER,
-        EXAMPLE_GENERATOR_OUTPUT
-      ),
+      createGenerator({
+        name: EXAMPLE_GENERATOR_NAME,
+        provider: EXAMPLE_GENERATOR_PROVIDER,
+        output: EXAMPLE_GENERATOR_OUTPUT,
+      }),
       `generator ${EXAMPLE_GENERATOR_NAME} {
   provider = "${EXAMPLE_GENERATOR_PROVIDER}"
   output = "${EXAMPLE_GENERATOR_OUTPUT}"
@@ -368,12 +400,12 @@ describe("printGenerator", () => {
     ],
     [
       "With binary targets",
-      createGenerator(
-        EXAMPLE_GENERATOR_NAME,
-        EXAMPLE_GENERATOR_PROVIDER,
-        null,
-        [EXAMPLE_BINARY_TARGET]
-      ),
+      createGenerator({
+        name: EXAMPLE_GENERATOR_NAME,
+        provider: EXAMPLE_GENERATOR_PROVIDER,
+        output: null,
+        binaryTargets: [EXAMPLE_BINARY_TARGET],
+      }),
       `generator ${EXAMPLE_GENERATOR_NAME} {
   provider = "${EXAMPLE_GENERATOR_PROVIDER}"
   binaryTargets = ["${EXAMPLE_BINARY_TARGET}"]
@@ -389,17 +421,23 @@ describe("print", () => {
   const cases: Array<[string, Schema, string]> = [
     [
       "Simple model",
-      createSchema([EXAMPLE_MODEL], []),
+      createSchema({ models: [EXAMPLE_MODEL], enums: [] }),
       `model ${EXAMPLE_MODEL.name} {
   ${printField(EXAMPLE_STRING_FIELD, POSTGRES_SQL_PROVIDER)}
 }`,
     ],
     [
       "Two models",
-      createSchema(
-        [EXAMPLE_MODEL, createModel("Order", [EXAMPLE_STRING_FIELD])],
-        []
-      ),
+      createSchema({
+        models: [
+          EXAMPLE_MODEL,
+          createModel({
+            name: "Order",
+            fields: [EXAMPLE_STRING_FIELD],
+          }),
+        ],
+        enums: [],
+      }),
       `model ${EXAMPLE_MODEL.name} {
   ${printField(EXAMPLE_STRING_FIELD, POSTGRES_SQL_PROVIDER)}
 }
@@ -410,15 +448,15 @@ model Order {
     ],
     [
       "Single datasource",
-      createSchema(
-        [],
-        [],
-        createDataSource(
-          EXAMPLE_DATA_SOURCE_NAME,
-          EXAMPLE_DATA_SOURCE_PROVIDER,
-          EXAMPLE_DATA_SOURCE_URL
-        )
-      ),
+      createSchema({
+        models: [],
+        enums: [],
+        dataSource: createDataSource({
+          name: EXAMPLE_DATA_SOURCE_NAME,
+          provider: EXAMPLE_DATA_SOURCE_PROVIDER,
+          url: EXAMPLE_DATA_SOURCE_URL,
+        }),
+      }),
       `datasource ${EXAMPLE_DATA_SOURCE_NAME} {
   provider = "${EXAMPLE_DATA_SOURCE_PROVIDER}"
   url      = "${EXAMPLE_DATA_SOURCE_URL}"
@@ -426,16 +464,35 @@ model Order {
     ],
     [
       "Single generator",
-      createSchema([], [], undefined, [
-        createGenerator(EXAMPLE_GENERATOR_NAME, EXAMPLE_GENERATOR_PROVIDER),
-      ]),
+      createSchema({
+        models: [],
+        enums: [],
+        dataSource: undefined,
+        generators: [
+          createGenerator({
+            name: EXAMPLE_GENERATOR_NAME,
+            provider: EXAMPLE_GENERATOR_PROVIDER,
+          }),
+        ],
+      }),
       `${printGenerator(
-        createGenerator(EXAMPLE_GENERATOR_NAME, EXAMPLE_GENERATOR_PROVIDER)
+        createGenerator({
+          name: EXAMPLE_GENERATOR_NAME,
+          provider: EXAMPLE_GENERATOR_PROVIDER,
+        })
       )}`,
     ],
     [
       "Single enum",
-      createSchema([], [createEnum(EXAMPLE_ENUM_NAME, [EXAMPLE_ENUM_VALUE])]),
+      createSchema({
+        models: [],
+        enums: [
+          createEnum({
+            name: EXAMPLE_ENUM_NAME,
+            values: [EXAMPLE_ENUM_VALUE],
+          }),
+        ],
+      }),
       `enum ${EXAMPLE_ENUM_NAME} {
   ${EXAMPLE_ENUM_VALUE}
 }`,
