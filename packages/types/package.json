@@ -1,6 +1,6 @@
 {
   "name": "@pmaltese/prisma-schema-dsl-types",
-  "version": "1.0.10",
+  "version": "1.1.0",
   "description": "types library for prisma-schema-dsl",
   "main": "dist/index.js",
   "scripts": {

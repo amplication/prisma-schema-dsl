@@ -32,6 +32,20 @@ export type DataSource = {
   url: string | DataSourceURLEnv;
 };
 
+export type PreviewFeature =
+  | "fullTextSearch"
+  | "fullTextIndex"
+  | "metrics"
+  | "orderByNulls"
+  | "tracing"
+  | "filteredRelationCount"
+  | "fieldReference"
+  | "multiSchema"
+  | "postgresqlExtensions"
+  | "deno"
+  | "extendedWhereUnique"
+  | "clientExtensions"
+  | "views";
 /**
  * Prisma's Schema generator
  * @see https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-schema/generators
@@ -42,6 +56,7 @@ export type Generator = {
   output?: string | null;
   /** @see https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-schema/generators#binary-targets */
   binaryTargets?: string[];
+  previewFeatures?: Array<PreviewFeature>;
 };
 
 /**
@@ -139,6 +154,14 @@ export type ObjectField = BaseField & {
   relationOnUpdate?: ReferentialActions;
 };
 
+export type Index = {
+  fields: Array<{ name: string; sort?: "desc" | "asc" }>;
+};
+
+export type FullTextIndex = {
+  fields: Array<{ name: string }>;
+};
+
 export type Model = {
   name: string;
   fields: Array<ScalarField | ObjectField>;
@@ -146,6 +169,8 @@ export type Model = {
   map?: string;
   /** @see https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-schema#comments */
   documentation?: string;
+  indexes?: Array<Index>;
+  fullTextIndexes?: Array<FullTextIndex>;
 };
 
 export type Enum = {

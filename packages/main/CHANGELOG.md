@@ -1,5 +1,11 @@
 # @pmaltese/prisma-schema-dsl
 
+## 3.1.0
+
+### Minor Changes
+
+- Implemented: generator preview features, model indexes and fullText indexes
+
 ## 3.0.0
 
 ### Major Changes

@@ -6,11 +6,14 @@ import {
   DataSourceURLEnv,
   Enum,
   FieldKind,
+  FullTextIndex,
   Generator,
+  Index,
   isCallExpression,
   Model,
   NOW,
   ObjectField,
+  PreviewFeature,
   ReferentialActions,
   ScalarField,
   ScalarFieldDefault,
@@ -67,11 +70,15 @@ export function createModel({
   fields,
   documentation,
   map,
+  indexes,
+  fullTextIndexes,
 }: {
   name: string;
   fields: Array<ScalarField | ObjectField>;
   documentation?: string;
   map?: string;
+  indexes?: Array<Index>;
+  fullTextIndexes?: Array<FullTextIndex>;
 }): Model {
   validateName(name);
   return {
@@ -79,6 +86,8 @@ export function createModel({
     fields,
     documentation,
     map,
+    indexes,
+    fullTextIndexes,
   };
 }
 
@@ -278,16 +287,19 @@ export function createGenerator({
   provider,
   output = null,
   binaryTargets = [],
+  previewFeatures = [],
 }: {
   name: string;
   provider: string;
   output?: string | null;
   binaryTargets?: string[];
+  previewFeatures?: Array<PreviewFeature>;
 }): Generator {
   return {
     name,
     provider,
     output,
     binaryTargets,
+    previewFeatures,
   };
 }
