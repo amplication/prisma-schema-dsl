@@ -11,5 +11,8 @@
   "bugs": {
     "url": "https://github.com/pierissimo/prisma-schema-dsl/issues"
   },
-  "homepage": "https://github.com/pierissimo/prisma-schema-dsl#readme"
+  "homepage": "https://github.com/pierissimo/prisma-schema-dsl#readme",
+  "devDependencies": {
+    "@changesets/cli": "^2.26.0"
+  }
 }

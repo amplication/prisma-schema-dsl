@@ -6,15 +6,12 @@
     "removeComments": true,
     "target": "es3",
     "sourceMap": true,
-    "outDir": "../../dist",
+    "outDir": "./dist",
     "baseUrl": "./src",
     "incremental": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true
   },
-  "include": [
-    "src"
-  ],
-  "exclude": [
-    "../../node_modules", "dist"]
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
 }
