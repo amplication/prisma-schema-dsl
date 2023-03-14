@@ -1,6 +1,6 @@
 {
   "name": "@pmaltese/prisma-schema-dsl",
-  "version": "2.0.9",
+  "version": "3.0.0",
   "description": "JavaScript interface for Prisma Schema DSL",
   "main": "dist/index.js",
   "scripts": {
