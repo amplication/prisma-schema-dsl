@@ -5,7 +5,7 @@ importers:
   .:
     specifiers: {}
 
-  packages/builder:
+  packages/main:
     specifiers:
       '@pmaltese/prisma-schema-dsl-types': ^1.0.9
       '@prisma/internals': ^4.6.1
