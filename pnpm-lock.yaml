@@ -10,7 +10,7 @@ importers:
 
   packages/main:
     specifiers:
-      '@pmaltese/prisma-schema-dsl-types': ^1.1.0
+      '@pmaltese/prisma-schema-dsl-types': ^1.2.0
       '@prisma/internals': ^4.6.1
       '@types/jest': ^26.0.19
       '@types/lodash.isempty': ^4.4.6

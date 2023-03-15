@@ -598,6 +598,24 @@ model Order {
 }`,
     ],
     [
+      "Single datasource with relationMode",
+      createSchema({
+        models: [],
+        enums: [],
+        dataSource: createDataSource({
+          name: EXAMPLE_DATA_SOURCE_NAME,
+          provider: EXAMPLE_DATA_SOURCE_PROVIDER,
+          url: EXAMPLE_DATA_SOURCE_URL,
+          relationMode: "prisma",
+        }),
+      }),
+      `datasource ${EXAMPLE_DATA_SOURCE_NAME} {
+  provider     = "${EXAMPLE_DATA_SOURCE_PROVIDER}"
+  url          = "${EXAMPLE_DATA_SOURCE_URL}"
+  relationMode = "prisma"
+}`,
+    ],
+    [
       "Single generator",
       createSchema({
         models: [],

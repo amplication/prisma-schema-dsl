@@ -58,9 +58,12 @@ export async function print(schema: Schema): Promise<string> {
  */
 export function printDataSource(dataSource: DataSource): string {
   const url = printDataSourceURL(dataSource.url);
+  const relationMode = dataSource.relationMode
+    ? `\nrelationMode = "${dataSource.relationMode}"`
+    : "";
   return `datasource ${dataSource.name} {
   provider = "${dataSource.provider}"
-  url      = ${url}
+  url      = ${url}${relationMode}
 }`;
 }
 

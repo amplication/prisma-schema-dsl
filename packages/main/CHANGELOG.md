@@ -1,5 +1,11 @@
 # @pmaltese/prisma-schema-dsl
 
+## 3.2.0
+
+### Minor Changes
+
+- Datasource: added 'relationMode' field
+
 ## 3.1.0
 
 ### Minor Changes

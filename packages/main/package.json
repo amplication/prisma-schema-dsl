@@ -1,6 +1,6 @@
 {
   "name": "@pmaltese/prisma-schema-dsl",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "description": "JavaScript interface for Prisma Schema DSL",
   "main": "dist/index.js",
   "scripts": {
@@ -32,7 +32,7 @@
     "@types/jest": "^26.0.19",
     "jest": "^26.6.3",
     "prettier": "^2.2.1",
-    "@pmaltese/prisma-schema-dsl-types": "^1.1.0",
+    "@pmaltese/prisma-schema-dsl-types": "^1.2.0",
     "ts-jest": "^26.4.4",
     "ts-toolbelt": "^9.6.0"
   },

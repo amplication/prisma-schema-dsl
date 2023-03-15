@@ -30,6 +30,7 @@ export type DataSource = {
   name: string;
   provider: DataSourceProvider;
   url: string | DataSourceURLEnv;
+  relationMode?: "foreignKeys" | "prisma";
 };
 
 export type PreviewFeature =

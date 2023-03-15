@@ -269,15 +269,18 @@ export function createDataSource({
   name,
   provider,
   url,
+  relationMode,
 }: {
   name: string;
   provider: DataSourceProvider;
   url: string | DataSourceURLEnv;
+  relationMode?: DataSource["relationMode"];
 }): DataSource {
   return {
     name,
     provider,
     url,
+    relationMode,
   };
 }
 
