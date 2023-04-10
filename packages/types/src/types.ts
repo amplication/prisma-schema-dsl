@@ -181,9 +181,19 @@ export type Enum = {
   documentation?: string;
 };
 
+export type View = {
+  name: string;
+  fields: Array<ScalarField | ObjectField>;
+  /** @see https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#map-1 */
+  map?: string;
+  /** @see https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-schema#comments */
+  documentation?: string;
+};
+
 export type Schema = {
   models: Model[];
   enums: Enum[];
   dataSource?: DataSource;
   generators: Generator[];
+  views?: View[];
 };

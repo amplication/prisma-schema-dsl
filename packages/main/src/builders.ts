@@ -91,6 +91,29 @@ export function createModel({
   };
 }
 
+/** Creates a view AST object */
+export function createView({
+  name,
+  fields,
+  documentation,
+  map,
+}: {
+  name: string;
+  fields: Array<ScalarField | ObjectField>;
+  documentation?: string;
+  map?: string;
+  indexes?: Array<Index>;
+  fullTextIndexes?: Array<FullTextIndex>;
+}): Model {
+  validateName(name);
+  return {
+    name,
+    fields,
+    documentation,
+    map,
+  };
+}
+
 /**
  * Creates a scalar field AST object
  * Validates given name argument

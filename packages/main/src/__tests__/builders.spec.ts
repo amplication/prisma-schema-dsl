@@ -3,7 +3,7 @@ import {
   createObjectField,
   createScalarField,
   OPTIONAL_LIST_ERROR_MESSAGE,
-} from "./builders";
+} from "../builders";
 
 const EXAMPLE_NAME = "EXAMPLE_NAME";
 const EXAMPLE_SCALAR_TYPE = ScalarType.String;
