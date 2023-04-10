@@ -1,5 +1,11 @@
 # @pmaltese/prisma-schema-dsl
 
+## 3.2.1
+
+### Patch Changes
+
+- e8acb3c: The tests were split into multiple files and the previous tests abstraction was removed (the 'cases' array).
+
 ## 3.2.0
 
 ### Minor Changes
