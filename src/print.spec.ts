@@ -45,6 +45,9 @@ const EXAMPLE_STRING_FIELD = createScalarField(
   false,
   true
 );
+
+const EXAMPLE_FIELD_ATTRIBUTES = ["@attr1", "@attr2", "@attr3"];
+
 const EXAMPLE_OTHER_STRING_FIELD = createScalarField(
   "exampleOtherFieldName",
   ScalarType.String,
@@ -115,26 +118,70 @@ describe("printField", () => {
         false,
         false,
         undefined,
-        EXAMPLE_DOCUMENTATION
+        EXAMPLE_DOCUMENTATION,
+        undefined,
+        EXAMPLE_FIELD_ATTRIBUTES
       ),
       `${printDocumentation(EXAMPLE_DOCUMENTATION)}\n${EXAMPLE_FIELD_NAME} ${
         ScalarType.String
-      }`,
+      } ${EXAMPLE_FIELD_ATTRIBUTES.join(" ")}`,
     ],
     [
       "Simple float field",
-      createScalarField(EXAMPLE_FIELD_NAME, ScalarType.Float, false, true),
-      `${EXAMPLE_FIELD_NAME} ${ScalarType.Float}`,
+      createScalarField(
+        EXAMPLE_FIELD_NAME,
+        ScalarType.Float,
+        false,
+        true,
+        false,
+        false,
+        false,
+        null,
+        undefined,
+        false,
+        EXAMPLE_FIELD_ATTRIBUTES
+      ),
+      `${EXAMPLE_FIELD_NAME} ${
+        ScalarType.Float
+      } ${EXAMPLE_FIELD_ATTRIBUTES.join(" ")}`,
     ],
     [
       "Simple optional string field",
-      createScalarField(EXAMPLE_FIELD_NAME, ScalarType.String, false, false),
-      `${EXAMPLE_FIELD_NAME} ${ScalarType.String}?`,
+      createScalarField(
+        EXAMPLE_FIELD_NAME,
+        ScalarType.String,
+        false,
+        false,
+        false,
+        false,
+        false,
+        null,
+        undefined,
+        false,
+        EXAMPLE_FIELD_ATTRIBUTES
+      ),
+      `${EXAMPLE_FIELD_NAME} ${
+        ScalarType.String
+      }? ${EXAMPLE_FIELD_ATTRIBUTES.join(" ")}`,
     ],
     [
       "Simple string array field",
-      createScalarField(EXAMPLE_FIELD_NAME, ScalarType.String, true, true),
-      `${EXAMPLE_FIELD_NAME} ${ScalarType.String}[]`,
+      createScalarField(
+        EXAMPLE_FIELD_NAME,
+        ScalarType.String,
+        true,
+        true,
+        false,
+        false,
+        false,
+        null,
+        undefined,
+        false,
+        EXAMPLE_FIELD_ATTRIBUTES
+      ),
+      `${EXAMPLE_FIELD_NAME} ${
+        ScalarType.String
+      }[] ${EXAMPLE_FIELD_ATTRIBUTES.join(" ")}`,
     ],
     [
       "Simple date-time field",
@@ -145,9 +192,15 @@ describe("printField", () => {
         true,
         false,
         false,
-        false
+        false,
+        null,
+        undefined,
+        false,
+        EXAMPLE_FIELD_ATTRIBUTES
       ),
-      `${EXAMPLE_FIELD_NAME} ${ScalarType.DateTime}`,
+      `${EXAMPLE_FIELD_NAME} ${
+        ScalarType.DateTime
+      } ${EXAMPLE_FIELD_ATTRIBUTES.join(" ")}`,
     ],
     [
       "Int field with default",
@@ -159,9 +212,14 @@ describe("printField", () => {
         false,
         false,
         false,
-        42
+        42,
+        undefined,
+        false,
+        EXAMPLE_FIELD_ATTRIBUTES
       ),
-      `${EXAMPLE_FIELD_NAME} ${ScalarType.Int} @default(42)`,
+      `${EXAMPLE_FIELD_NAME} ${
+        ScalarType.Int
+      } @default(42) ${EXAMPLE_FIELD_ATTRIBUTES.join(" ")}`,
     ],
     [
       "Int field with autoincrement()",
@@ -173,9 +231,14 @@ describe("printField", () => {
         false,
         false,
         false,
-        { callee: AUTO_INCREMENT }
+        { callee: AUTO_INCREMENT },
+        undefined,
+        false,
+        EXAMPLE_FIELD_ATTRIBUTES
       ),
-      `${EXAMPLE_FIELD_NAME} ${ScalarType.Int} @default(autoincrement())`,
+      `${EXAMPLE_FIELD_NAME} ${
+        ScalarType.Int
+      } @default(autoincrement()) ${EXAMPLE_FIELD_ATTRIBUTES.join(" ")}`,
     ],
     [
       "String field with uuid()",
@@ -187,9 +250,14 @@ describe("printField", () => {
         false,
         false,
         false,
-        { callee: UUID }
+        { callee: UUID },
+        undefined,
+        false,
+        EXAMPLE_FIELD_ATTRIBUTES
       ),
-      `${EXAMPLE_FIELD_NAME} ${ScalarType.String} @default(uuid())`,
+      `${EXAMPLE_FIELD_NAME} ${
+        ScalarType.String
+      } @default(uuid()) ${EXAMPLE_FIELD_ATTRIBUTES.join(" ")}`,
     ],
     [
       "String field with cuid()",
@@ -201,9 +269,14 @@ describe("printField", () => {
         false,
         false,
         false,
-        { callee: CUID }
+        { callee: CUID },
+        undefined,
+        false,
+        EXAMPLE_FIELD_ATTRIBUTES
       ),
-      `${EXAMPLE_FIELD_NAME} ${ScalarType.String} @default(cuid())`,
+      `${EXAMPLE_FIELD_NAME} ${
+        ScalarType.String
+      } @default(cuid()) ${EXAMPLE_FIELD_ATTRIBUTES.join(" ")}`,
     ],
     [
       "Date-time field with now()",
@@ -215,9 +288,14 @@ describe("printField", () => {
         false,
         false,
         false,
-        { callee: NOW }
+        { callee: NOW },
+        undefined,
+        false,
+        EXAMPLE_FIELD_ATTRIBUTES
       ),
-      `${EXAMPLE_FIELD_NAME} ${ScalarType.DateTime} @default(now())`,
+      `${EXAMPLE_FIELD_NAME} ${
+        ScalarType.DateTime
+      } @default(now()) ${EXAMPLE_FIELD_ATTRIBUTES.join(" ")}`,
     ],
     [
       "Boolean field with default value",
@@ -229,14 +307,33 @@ describe("printField", () => {
         false,
         false,
         false,
-        true
+        true,
+        undefined,
+        false,
+        EXAMPLE_FIELD_ATTRIBUTES
       ),
-      `${EXAMPLE_FIELD_NAME} ${ScalarType.Boolean} @default(true)`,
+      `${EXAMPLE_FIELD_NAME} ${
+        ScalarType.Boolean
+      } @default(true) ${EXAMPLE_FIELD_ATTRIBUTES.join(" ")}`,
     ],
     [
       "Simple object field",
-      createObjectField(EXAMPLE_FIELD_NAME, EXAMPLE_OBJECT_NAME, false, true),
-      `${EXAMPLE_FIELD_NAME} ${EXAMPLE_OBJECT_NAME}`,
+      createObjectField(
+        EXAMPLE_FIELD_NAME,
+        EXAMPLE_OBJECT_NAME,
+        false,
+        true,
+        null,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        EXAMPLE_FIELD_ATTRIBUTES
+      ),
+      `${EXAMPLE_FIELD_NAME} ${EXAMPLE_OBJECT_NAME} ${EXAMPLE_FIELD_ATTRIBUTES.join(
+        " "
+      )}`,
     ],
     [
       "Object field with relation",
@@ -245,9 +342,17 @@ describe("printField", () => {
         EXAMPLE_OBJECT_NAME,
         false,
         true,
-        EXAMPLE_RELATION_NAME
+        EXAMPLE_RELATION_NAME,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        EXAMPLE_FIELD_ATTRIBUTES
       ),
-      `${EXAMPLE_FIELD_NAME} ${EXAMPLE_OBJECT_NAME} @relation(name: "${EXAMPLE_RELATION_NAME}")`,
+      `${EXAMPLE_FIELD_NAME} ${EXAMPLE_OBJECT_NAME} @relation(name: "${EXAMPLE_RELATION_NAME}") ${EXAMPLE_FIELD_ATTRIBUTES.join(
+        " "
+      )}`,
     ],
     [
       "Object field with fields",
@@ -257,9 +362,16 @@ describe("printField", () => {
         false,
         true,
         null,
-        [EXAMPLE_RELATION_FIELD_NAME]
+        [EXAMPLE_RELATION_FIELD_NAME],
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        EXAMPLE_FIELD_ATTRIBUTES
       ),
-      `${EXAMPLE_FIELD_NAME} ${EXAMPLE_OBJECT_NAME} @relation(fields: [${EXAMPLE_RELATION_FIELD_NAME}])`,
+      `${EXAMPLE_FIELD_NAME} ${EXAMPLE_OBJECT_NAME} @relation(fields: [${EXAMPLE_RELATION_FIELD_NAME}]) ${EXAMPLE_FIELD_ATTRIBUTES.join(
+        " "
+      )}`,
     ],
     [
       "Object field with references",
@@ -270,9 +382,15 @@ describe("printField", () => {
         true,
         null,
         [],
-        [EXAMPLE_RELATION_REFERENCE_FIELD_NAME]
+        [EXAMPLE_RELATION_REFERENCE_FIELD_NAME],
+        undefined,
+        undefined,
+        undefined,
+        EXAMPLE_FIELD_ATTRIBUTES
       ),
-      `${EXAMPLE_FIELD_NAME} ${EXAMPLE_OBJECT_NAME} @relation(references: [${EXAMPLE_RELATION_REFERENCE_FIELD_NAME}])`,
+      `${EXAMPLE_FIELD_NAME} ${EXAMPLE_OBJECT_NAME} @relation(references: [${EXAMPLE_RELATION_REFERENCE_FIELD_NAME}]) ${EXAMPLE_FIELD_ATTRIBUTES.join(
+        " "
+      )}`,
     ],
     [
       "Object field with full relation",
@@ -283,9 +401,15 @@ describe("printField", () => {
         true,
         EXAMPLE_RELATION_NAME,
         [EXAMPLE_RELATION_FIELD_NAME],
-        [EXAMPLE_RELATION_REFERENCE_FIELD_NAME]
+        [EXAMPLE_RELATION_REFERENCE_FIELD_NAME],
+        undefined,
+        undefined,
+        undefined,
+        EXAMPLE_FIELD_ATTRIBUTES
       ),
-      `${EXAMPLE_FIELD_NAME} ${EXAMPLE_OBJECT_NAME} @relation(name: "${EXAMPLE_RELATION_NAME}", fields: [${EXAMPLE_RELATION_FIELD_NAME}], references: [${EXAMPLE_RELATION_REFERENCE_FIELD_NAME}])`,
+      `${EXAMPLE_FIELD_NAME} ${EXAMPLE_OBJECT_NAME} @relation(name: "${EXAMPLE_RELATION_NAME}", fields: [${EXAMPLE_RELATION_FIELD_NAME}], references: [${EXAMPLE_RELATION_REFERENCE_FIELD_NAME}]) ${EXAMPLE_FIELD_ATTRIBUTES.join(
+        " "
+      )}`,
     ],
   ];
   test.each(cases)("%s", (name, field, expected) => {
@@ -337,6 +461,24 @@ ${printField(EXAMPLE_OTHER_STRING_FIELD, POSTGRES_SQL_PROVIDER)}
 ${printField(EXAMPLE_STRING_FIELD, POSTGRES_SQL_PROVIDER)}
 
 ${printModelMap(EXAMPLE_MODEL_MAP)}
+}`,
+    ],
+    [
+      "with model attributes",
+      createModel(
+        EXAMPLE_MODEL_NAME,
+        [EXAMPLE_STRING_FIELD, EXAMPLE_OTHER_STRING_FIELD],
+        "",
+        undefined,
+        ["@@id(fields: [title, author])", "@@createdAt", "@@updatedAt"]
+      ),
+      `model ${EXAMPLE_MODEL_NAME} {
+${printField(EXAMPLE_STRING_FIELD, POSTGRES_SQL_PROVIDER)}
+${printField(EXAMPLE_OTHER_STRING_FIELD, POSTGRES_SQL_PROVIDER)}
+
+@@id(fields: [title, author])
+@@createdAt
+@@updatedAt
 }`,
     ],
   ];

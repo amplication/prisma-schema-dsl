@@ -133,10 +133,19 @@ export function printModel(
     .join("\n");
   const map = model.map ? printModelMap(model.map, true) : "";
 
+  const attributesText = printModelAttributes(model.attributes);
+
   return withDocumentation(
     model.documentation,
-    `model ${model.name} {\n${fieldTexts}${map}\n}`
+    `model ${model.name} {\n${fieldTexts}${map}\n${attributesText}}`
   );
+}
+
+export function printModelAttributes(attributes?: string[] | null): string {
+  if (!attributes || attributes.length === 0) {
+    return "";
+  }
+  return `\n${attributes.join("\n")}\n`;
 }
 
 /**
@@ -192,6 +201,8 @@ function printScalarField(
     }
   }
 
+  Array.isArray(field.attributes) && attributes.push(...field.attributes);
+
   const typeText = `${field.type}${modifiersText}`;
   const attributesText = attributes.join(" ");
   return [field.name, typeText, attributesText].filter(Boolean).join(" ");
@@ -229,6 +240,9 @@ function printObjectField(field: ObjectField): string {
   if (!isEmpty(relation)) {
     attributes.push(printRelation(relation, field));
   }
+
+  Array.isArray(field.attributes) && attributes.push(...field.attributes);
+
   const typeText = `${field.type}${printFieldModifiers(field)}`;
   const attributesText = attributes.join(" ");
   return [field.name, typeText, attributesText].filter(Boolean).join(" ");
