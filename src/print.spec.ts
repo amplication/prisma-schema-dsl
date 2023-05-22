@@ -415,6 +415,26 @@ describe("printField", () => {
   test.each(cases)("%s", (name, field, expected) => {
     expect(printField(field, POSTGRES_SQL_PROVIDER)).toBe(expected);
   });
+
+  test("Throws error when a field attribute doesn't start with '@'", () => {
+    expect(() =>
+      createScalarField(
+        EXAMPLE_FIELD_NAME,
+        ScalarType.String,
+        false,
+        true,
+        false,
+        false,
+        false,
+        undefined,
+        undefined,
+        false,
+        ["@attr1", "@attr2", "attr3", "\n\nattr4"]
+      )
+    ).toThrow(
+      "Invalid field attribute: all field attributes must start with @."
+    );
+  });
 });
 
 describe("printModel", () => {
@@ -484,6 +504,19 @@ ${printField(EXAMPLE_OTHER_STRING_FIELD, POSTGRES_SQL_PROVIDER)}
   ];
   test.each(cases)("%s", (name, model, expected) => {
     expect(printModel(model, POSTGRES_SQL_PROVIDER)).toBe(expected);
+  });
+  test("Throws error when a model attribute doesn't start with '@@'", () => {
+    expect(() =>
+      createModel(EXAMPLE_MODEL_NAME, [EXAMPLE_STRING_FIELD], "", undefined, [
+        "@@id(fields: [title, author])",
+        "@@createdAt",
+        "@updatedAt",
+        "invalid",
+        "\n\ninvalid2",
+      ])
+    ).toThrow(
+      "Invalid model attribute: all model attributes must start with @@."
+    );
   });
 });
 
