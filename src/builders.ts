@@ -267,7 +267,7 @@ function validateAndPrepareAttributesPrefix(
     );
   }
 
-   if (Array.isArray(attributes)) {
+  if (Array.isArray(attributes)) {
     attributes.forEach((attribute) => attribute.trim());
   }
 
