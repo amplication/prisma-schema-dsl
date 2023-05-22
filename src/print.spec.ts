@@ -46,7 +46,7 @@ const EXAMPLE_STRING_FIELD = createScalarField(
   true
 );
 
-const EXAMPLE_FIELD_ATTRIBUTES = ["@attr1", "@attr2", "@attr3"];
+const EXAMPLE_FIELD_ATTRIBUTES = [" @attr1", "@attr2", " @attr3"];
 
 const EXAMPLE_OTHER_STRING_FIELD = createScalarField(
   "exampleOtherFieldName",
@@ -429,10 +429,10 @@ describe("printField", () => {
         undefined,
         undefined,
         false,
-        ["@attr1", "@attr2", "attr3", "\n\nattr4"]
+        [" @attr1", "@attr2", " attr3", "\n\nattr4"]
       )
     ).toThrow(
-      "Invalid field attribute: all field attributes must start with @."
+      `Invalid field ${EXAMPLE_FIELD_NAME} attribute: all field attributes must start with @.`
     );
   });
 });
@@ -508,14 +508,14 @@ ${printField(EXAMPLE_OTHER_STRING_FIELD, POSTGRES_SQL_PROVIDER)}
   test("Throws error when a model attribute doesn't start with '@@'", () => {
     expect(() =>
       createModel(EXAMPLE_MODEL_NAME, [EXAMPLE_STRING_FIELD], "", undefined, [
-        "@@id(fields: [title, author])",
+        " @@id(fields: [title, author])",
         "@@createdAt",
-        "@updatedAt",
+        " @updatedAt",
         "invalid",
         "\n\ninvalid2",
       ])
     ).toThrow(
-      "Invalid model attribute: all model attributes must start with @@."
+      `Invalid model ${EXAMPLE_MODEL_NAME} attribute: all model attributes must start with @@.`
     );
   });
 });
