@@ -254,11 +254,21 @@ function validateAndPrepareAttributesPrefix(
   }
 
   if (typeof attributes === "string") {
-    attributes = attributes.split(attributePrefix);
-    attributes = attributes.map((attribute) =>
-      attribute.length ? `${attributePrefix}${attribute}`.trim() : ""
+    // split by new lines or empty strings first
+    attributes = attributes.split(/\s+/);
+    // flatten the array and split each string by attributePrefix only if it contains attributePrefix
+    attributes = attributes.flatMap((attribute) =>
+      attribute.includes(attributePrefix)
+        ? attribute
+            .split(attributePrefix)
+            .filter(Boolean) // Remove empty strings
+            .map((attr) => attributePrefix + attr.trim())
+        : attribute.trim()
     );
-    attributes.shift();
+  }
+
+   if (Array.isArray(attributes)) {
+    attributes.forEach((attribute) => attribute.trim());
   }
 
   // Check if it's an array and if all attributes start with the prefix
