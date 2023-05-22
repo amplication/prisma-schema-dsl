@@ -234,58 +234,50 @@ function validateModifiers(isRequired: boolean, isList: boolean): void {
   }
 }
 
-function validateAndPrepareAttributesPrefix(
-  attributePrefix: string,
-  invalidErrorMessage: string,
+function validateAndPrepareModelAttributes(
   attributes?: string | string[]
 ): string[] | null {
   if (!attributes) {
     return null;
   }
-
   if (typeof attributes === "string") {
-    // split by new lines or empty strings first
-    attributes = attributes.split(/\s+/);
-    // flatten the array and split each string by attributePrefix only if it contains attributePrefix
-    attributes = attributes.flatMap((attribute) =>
-      attribute.includes(attributePrefix)
-        ? attribute
-            .split(attributePrefix)
-            .filter(Boolean) // Remove empty strings
-            .map((attr) => attributePrefix + attr.trim())
-        : attribute.trim()
+    attributes = attributes.split("@@");
+    attributes = attributes.map((attribute) =>
+      attribute.length ? `@@${attribute}`.trim() : ""
     );
+    attributes.shift();
   }
-
-  // Check if it's an array and if all attributes start with the prefix
   if (
     !Array.isArray(attributes) ||
-    !attributes.every((attribute) => attribute.startsWith(attributePrefix))
+    !attributes.every((attribute) => attribute.startsWith("@@"))
   ) {
-    throw new Error(invalidErrorMessage);
+    throw new Error(INVALID_MODEL_ATTRIBUTES_ERROR_MESSAGE);
   }
 
   return attributes;
 }
 
-function validateAndPrepareModelAttributes(
-  attributes?: string | string[]
-): string[] | null {
-  return validateAndPrepareAttributesPrefix(
-    "@@",
-    INVALID_MODEL_ATTRIBUTES_ERROR_MESSAGE,
-    attributes
-  );
-}
-
 function validateAndPrepareFieldAttributes(
   attributes?: string | string[]
 ): string[] | null {
-  return validateAndPrepareAttributesPrefix(
-    "@",
-    INVALID_FIELD_ATTRIBUTES_ERROR_MESSAGE,
-    attributes
-  );
+  if (!attributes) {
+    return null;
+  }
+  if (typeof attributes === "string") {
+    attributes = attributes.split("@");
+    attributes = attributes.map((attribute) =>
+      attribute.length ? `@${attribute}`.trim() : ""
+    );
+    attributes.shift();
+  }
+  if (
+    !Array.isArray(attributes) ||
+    !attributes.every((attribute) => attribute.startsWith("@"))
+  ) {
+    throw new Error(INVALID_FIELD_ATTRIBUTES_ERROR_MESSAGE);
+  }
+
+  return attributes;
 }
 
 /** Creates a data source AST object */
