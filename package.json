@@ -32,7 +32,7 @@
     "@types/jest": "^26.0.19",
     "jest": "^26.6.3",
     "prettier": "^2.2.1",
-    "prisma-schema-dsl-types": "^1.0.8",
+    "prisma-schema-dsl-types": "^1.1.0",
     "ts-jest": "^26.4.4",
     "ts-toolbelt": "^9.6.0"
   },
