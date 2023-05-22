@@ -23,6 +23,12 @@ const NAME_REGEXP = /[A-Za-z][A-Za-z0-9_]*/;
 export const OPTIONAL_LIST_ERROR_MESSAGE =
   "Invalid modifiers: You cannot combine isRequired: false and isList: true - optional lists are not supported.";
 
+export const INVALID_MODEL_ATTRIBUTES_ERROR_MESSAGE =
+  "Invalid model attribute: all model attributes must start with @@.";
+
+export const INVALID_FIELD_ATTRIBUTES_ERROR_MESSAGE =
+  "Invalid field attribute: all field attributes must start with @.";
+
 /** Creates a schema AST object */
 export function createSchema(
   models: Model[],
@@ -57,14 +63,17 @@ export function createModel(
   name: string,
   fields: Array<ScalarField | ObjectField>,
   documentation?: string,
-  map?: string
+  map?: string,
+  attributes?: string | string[]
 ): Model {
   validateName(name);
+  const preparedAttributes = validateAndPrepareModelAttributes(attributes);
   return {
     name,
     fields,
     documentation,
     map,
+    attributes: preparedAttributes,
   };
 }
 
@@ -82,11 +91,13 @@ export function createScalarField(
   isUpdatedAt: boolean = false,
   defaultValue: ScalarFieldDefault = null,
   documentation?: string,
-  isForeignKey: boolean = false
+  isForeignKey: boolean = false,
+  attributes?: string | string[]
 ): ScalarField {
   validateName(name);
   validateScalarDefault(type, defaultValue);
   validateModifiers(isRequired, isList);
+  const preparedAttributes = validateAndPrepareFieldAttributes(attributes);
   return {
     name,
     isList,
@@ -99,6 +110,7 @@ export function createScalarField(
     default: defaultValue,
     documentation,
     isForeignKey,
+    attributes: preparedAttributes,
   };
 }
 
@@ -185,10 +197,12 @@ export function createObjectField(
   relationReferences: string[] = [],
   relationOnDelete: ReferentialActions = ReferentialActions.NONE,
   relationOnUpdate: ReferentialActions = ReferentialActions.NONE,
-  documentation?: string
+  documentation?: string,
+  attributes?: string | string[]
 ): ObjectField {
   validateName(name);
   validateModifiers(isRequired, isList);
+  const preparedAttributes = validateAndPrepareFieldAttributes(attributes);
 
   return {
     name,
@@ -202,6 +216,7 @@ export function createObjectField(
     relationOnDelete,
     relationOnUpdate,
     documentation,
+    attributes: preparedAttributes,
   };
 }
 
@@ -217,6 +232,60 @@ function validateModifiers(isRequired: boolean, isList: boolean): void {
   if (!isRequired && isList) {
     throw new Error(OPTIONAL_LIST_ERROR_MESSAGE);
   }
+}
+
+function validateAndPrepareAttributesPrefix(
+  attributePrefix: string,
+  invalidErrorMessage: string,
+  attributes?: string | string[]
+): string[] | null {
+  if (!attributes) {
+    return null;
+  }
+
+  if (typeof attributes === "string") {
+    // split by new lines or empty strings first
+    attributes = attributes.split(/\s+/);
+    // flatten the array and split each string by attributePrefix only if it contains attributePrefix
+    attributes = attributes.flatMap((attribute) =>
+      attribute.includes(attributePrefix)
+        ? attribute
+            .split(attributePrefix)
+            .filter(Boolean) // Remove empty strings
+            .map((attr) => attributePrefix + attr.trim())
+        : attribute.trim()
+    );
+  }
+
+  // Check if it's an array and if all attributes start with the prefix
+  if (
+    !Array.isArray(attributes) ||
+    !attributes.every((attribute) => attribute.startsWith(attributePrefix))
+  ) {
+    throw new Error(invalidErrorMessage);
+  }
+
+  return attributes;
+}
+
+function validateAndPrepareModelAttributes(
+  attributes?: string | string[]
+): string[] | null {
+  return validateAndPrepareAttributesPrefix(
+    "@@",
+    INVALID_MODEL_ATTRIBUTES_ERROR_MESSAGE,
+    attributes
+  );
+}
+
+function validateAndPrepareFieldAttributes(
+  attributes?: string | string[]
+): string[] | null {
+  return validateAndPrepareAttributesPrefix(
+    "@",
+    INVALID_FIELD_ATTRIBUTES_ERROR_MESSAGE,
+    attributes
+  );
 }
 
 /** Creates a data source AST object */
