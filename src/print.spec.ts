@@ -47,7 +47,7 @@ const EXAMPLE_STRING_FIELD = createScalarField(
 );
 
 const EXAMPLE_FIELD_ATTRIBUTES =
-  "@relation(fields: [authorId], references: [id]) @map(name: \"author_id\") @unique";
+  '@relation(fields: [authorId], references: [id]) @map(name: "author_id") @unique';
 
 const EXAMPLE_OTHER_STRING_FIELD = createScalarField(
   "exampleOtherFieldName",
