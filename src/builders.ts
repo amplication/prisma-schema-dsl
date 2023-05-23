@@ -254,16 +254,19 @@ function validateAndPrepareAttributesPrefix(
   }
 
   if (typeof attributes === "string") {
-    // split by new lines or empty strings first
-    attributes = attributes.split(/\s+/);
-    // flatten the array and split each string by attributePrefix only if it contains attributePrefix
-    attributes = attributes.flatMap((attribute) =>
-      attribute.includes(attributePrefix)
-        ? attribute
-            .split(attributePrefix)
-            .filter(Boolean) // Remove empty strings
-            .map((attr) => attributePrefix + attr.trim())
-        : attribute.trim()
+    // clean up new lines
+    attributes = attributes.replace(/\n/g, " ");
+    // split by attributePrefix
+    attributes = attributes.split(attributePrefix);
+    // remove empty strings
+    attributes = attributes.filter(Boolean);
+    // remove trailing and leading spaces
+    attributes = attributes.map((attribute) =>
+      attribute.replace(/\n/g, " ").trim()
+    );
+    // add back attributePrefix
+    attributes = attributes.map(
+      (attribute) => attributePrefix + attribute.trim()
     );
   }
 
@@ -271,11 +274,13 @@ function validateAndPrepareAttributesPrefix(
     attributes.forEach((attribute) => attribute.trim());
   }
 
-  // Check if it's an array and if all attributes start with the prefix
+  // Check if it's an array and if all attributes start with the prefix and that it's not only the prefix
   if (
     !Array.isArray(attributes) ||
-    !attributes.every((attribute) =>
-      attribute.trim().startsWith(attributePrefix)
+    !attributes.every(
+      (attribute) =>
+        attribute.trim().startsWith(attributePrefix) &&
+        attribute.length > attributePrefix.length
     )
   ) {
     throw new Error(invalidErrorMessage(name));

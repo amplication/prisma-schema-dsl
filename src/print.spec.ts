@@ -46,7 +46,8 @@ const EXAMPLE_STRING_FIELD = createScalarField(
   true
 );
 
-const EXAMPLE_FIELD_ATTRIBUTES = [" @attr1", "@attr2", " @attr3"];
+const EXAMPLE_FIELD_ATTRIBUTES =
+  "@relation(fields: [authorId], references: [id]) @map(name: \"author_id\") @unique";
 
 const EXAMPLE_OTHER_STRING_FIELD = createScalarField(
   "exampleOtherFieldName",
@@ -124,7 +125,7 @@ describe("printField", () => {
       ),
       `${printDocumentation(EXAMPLE_DOCUMENTATION)}\n${EXAMPLE_FIELD_NAME} ${
         ScalarType.String
-      } ${EXAMPLE_FIELD_ATTRIBUTES.join(" ")}`,
+      } ${EXAMPLE_FIELD_ATTRIBUTES}`,
     ],
     [
       "Simple float field",
@@ -141,9 +142,7 @@ describe("printField", () => {
         false,
         EXAMPLE_FIELD_ATTRIBUTES
       ),
-      `${EXAMPLE_FIELD_NAME} ${
-        ScalarType.Float
-      } ${EXAMPLE_FIELD_ATTRIBUTES.join(" ")}`,
+      `${EXAMPLE_FIELD_NAME} ${ScalarType.Float} ${EXAMPLE_FIELD_ATTRIBUTES}`,
     ],
     [
       "Simple optional string field",
@@ -160,9 +159,7 @@ describe("printField", () => {
         false,
         EXAMPLE_FIELD_ATTRIBUTES
       ),
-      `${EXAMPLE_FIELD_NAME} ${
-        ScalarType.String
-      }? ${EXAMPLE_FIELD_ATTRIBUTES.join(" ")}`,
+      `${EXAMPLE_FIELD_NAME} ${ScalarType.String}? ${EXAMPLE_FIELD_ATTRIBUTES}`,
     ],
     [
       "Simple string array field",
@@ -179,9 +176,7 @@ describe("printField", () => {
         false,
         EXAMPLE_FIELD_ATTRIBUTES
       ),
-      `${EXAMPLE_FIELD_NAME} ${
-        ScalarType.String
-      }[] ${EXAMPLE_FIELD_ATTRIBUTES.join(" ")}`,
+      `${EXAMPLE_FIELD_NAME} ${ScalarType.String}[] ${EXAMPLE_FIELD_ATTRIBUTES}`,
     ],
     [
       "Simple date-time field",
@@ -198,9 +193,7 @@ describe("printField", () => {
         false,
         EXAMPLE_FIELD_ATTRIBUTES
       ),
-      `${EXAMPLE_FIELD_NAME} ${
-        ScalarType.DateTime
-      } ${EXAMPLE_FIELD_ATTRIBUTES.join(" ")}`,
+      `${EXAMPLE_FIELD_NAME} ${ScalarType.DateTime} ${EXAMPLE_FIELD_ATTRIBUTES}`,
     ],
     [
       "Int field with default",
@@ -217,9 +210,7 @@ describe("printField", () => {
         false,
         EXAMPLE_FIELD_ATTRIBUTES
       ),
-      `${EXAMPLE_FIELD_NAME} ${
-        ScalarType.Int
-      } @default(42) ${EXAMPLE_FIELD_ATTRIBUTES.join(" ")}`,
+      `${EXAMPLE_FIELD_NAME} ${ScalarType.Int} @default(42) ${EXAMPLE_FIELD_ATTRIBUTES}`,
     ],
     [
       "Int field with autoincrement()",
@@ -236,9 +227,7 @@ describe("printField", () => {
         false,
         EXAMPLE_FIELD_ATTRIBUTES
       ),
-      `${EXAMPLE_FIELD_NAME} ${
-        ScalarType.Int
-      } @default(autoincrement()) ${EXAMPLE_FIELD_ATTRIBUTES.join(" ")}`,
+      `${EXAMPLE_FIELD_NAME} ${ScalarType.Int} @default(autoincrement()) ${EXAMPLE_FIELD_ATTRIBUTES}`,
     ],
     [
       "String field with uuid()",
@@ -255,9 +244,7 @@ describe("printField", () => {
         false,
         EXAMPLE_FIELD_ATTRIBUTES
       ),
-      `${EXAMPLE_FIELD_NAME} ${
-        ScalarType.String
-      } @default(uuid()) ${EXAMPLE_FIELD_ATTRIBUTES.join(" ")}`,
+      `${EXAMPLE_FIELD_NAME} ${ScalarType.String} @default(uuid()) ${EXAMPLE_FIELD_ATTRIBUTES}`,
     ],
     [
       "String field with cuid()",
@@ -274,9 +261,7 @@ describe("printField", () => {
         false,
         EXAMPLE_FIELD_ATTRIBUTES
       ),
-      `${EXAMPLE_FIELD_NAME} ${
-        ScalarType.String
-      } @default(cuid()) ${EXAMPLE_FIELD_ATTRIBUTES.join(" ")}`,
+      `${EXAMPLE_FIELD_NAME} ${ScalarType.String} @default(cuid()) ${EXAMPLE_FIELD_ATTRIBUTES}`,
     ],
     [
       "Date-time field with now()",
@@ -293,9 +278,7 @@ describe("printField", () => {
         false,
         EXAMPLE_FIELD_ATTRIBUTES
       ),
-      `${EXAMPLE_FIELD_NAME} ${
-        ScalarType.DateTime
-      } @default(now()) ${EXAMPLE_FIELD_ATTRIBUTES.join(" ")}`,
+      `${EXAMPLE_FIELD_NAME} ${ScalarType.DateTime} @default(now()) ${EXAMPLE_FIELD_ATTRIBUTES}`,
     ],
     [
       "Boolean field with default value",
@@ -312,9 +295,7 @@ describe("printField", () => {
         false,
         EXAMPLE_FIELD_ATTRIBUTES
       ),
-      `${EXAMPLE_FIELD_NAME} ${
-        ScalarType.Boolean
-      } @default(true) ${EXAMPLE_FIELD_ATTRIBUTES.join(" ")}`,
+      `${EXAMPLE_FIELD_NAME} ${ScalarType.Boolean} @default(true) ${EXAMPLE_FIELD_ATTRIBUTES}`,
     ],
     [
       "Simple object field",
@@ -331,9 +312,7 @@ describe("printField", () => {
         undefined,
         EXAMPLE_FIELD_ATTRIBUTES
       ),
-      `${EXAMPLE_FIELD_NAME} ${EXAMPLE_OBJECT_NAME} ${EXAMPLE_FIELD_ATTRIBUTES.join(
-        " "
-      )}`,
+      `${EXAMPLE_FIELD_NAME} ${EXAMPLE_OBJECT_NAME} ${EXAMPLE_FIELD_ATTRIBUTES}`,
     ],
     [
       "Object field with relation",
@@ -350,9 +329,7 @@ describe("printField", () => {
         undefined,
         EXAMPLE_FIELD_ATTRIBUTES
       ),
-      `${EXAMPLE_FIELD_NAME} ${EXAMPLE_OBJECT_NAME} @relation(name: "${EXAMPLE_RELATION_NAME}") ${EXAMPLE_FIELD_ATTRIBUTES.join(
-        " "
-      )}`,
+      `${EXAMPLE_FIELD_NAME} ${EXAMPLE_OBJECT_NAME} @relation(name: "${EXAMPLE_RELATION_NAME}") ${EXAMPLE_FIELD_ATTRIBUTES}`,
     ],
     [
       "Object field with fields",
@@ -369,9 +346,7 @@ describe("printField", () => {
         undefined,
         EXAMPLE_FIELD_ATTRIBUTES
       ),
-      `${EXAMPLE_FIELD_NAME} ${EXAMPLE_OBJECT_NAME} @relation(fields: [${EXAMPLE_RELATION_FIELD_NAME}]) ${EXAMPLE_FIELD_ATTRIBUTES.join(
-        " "
-      )}`,
+      `${EXAMPLE_FIELD_NAME} ${EXAMPLE_OBJECT_NAME} @relation(fields: [${EXAMPLE_RELATION_FIELD_NAME}]) ${EXAMPLE_FIELD_ATTRIBUTES}`,
     ],
     [
       "Object field with references",
@@ -388,9 +363,7 @@ describe("printField", () => {
         undefined,
         EXAMPLE_FIELD_ATTRIBUTES
       ),
-      `${EXAMPLE_FIELD_NAME} ${EXAMPLE_OBJECT_NAME} @relation(references: [${EXAMPLE_RELATION_REFERENCE_FIELD_NAME}]) ${EXAMPLE_FIELD_ATTRIBUTES.join(
-        " "
-      )}`,
+      `${EXAMPLE_FIELD_NAME} ${EXAMPLE_OBJECT_NAME} @relation(references: [${EXAMPLE_RELATION_REFERENCE_FIELD_NAME}]) ${EXAMPLE_FIELD_ATTRIBUTES}`,
     ],
     [
       "Object field with full relation",
@@ -407,9 +380,7 @@ describe("printField", () => {
         undefined,
         EXAMPLE_FIELD_ATTRIBUTES
       ),
-      `${EXAMPLE_FIELD_NAME} ${EXAMPLE_OBJECT_NAME} @relation(name: "${EXAMPLE_RELATION_NAME}", fields: [${EXAMPLE_RELATION_FIELD_NAME}], references: [${EXAMPLE_RELATION_REFERENCE_FIELD_NAME}]) ${EXAMPLE_FIELD_ATTRIBUTES.join(
-        " "
-      )}`,
+      `${EXAMPLE_FIELD_NAME} ${EXAMPLE_OBJECT_NAME} @relation(name: "${EXAMPLE_RELATION_NAME}", fields: [${EXAMPLE_RELATION_FIELD_NAME}], references: [${EXAMPLE_RELATION_REFERENCE_FIELD_NAME}]) ${EXAMPLE_FIELD_ATTRIBUTES}`,
     ],
   ];
   test.each(cases)("%s", (name, field, expected) => {
@@ -429,7 +400,7 @@ describe("printField", () => {
         undefined,
         undefined,
         false,
-        [" @attr1", "@attr2", " attr3", "\n\nattr4"]
+        " @attr1 @attr2\n\nattr3\n\nattr4"
       )
     ).toThrow(
       `Invalid field ${EXAMPLE_FIELD_NAME} attribute: all field attributes must start with @.`
@@ -490,7 +461,7 @@ ${printModelMap(EXAMPLE_MODEL_MAP)}
         [EXAMPLE_STRING_FIELD, EXAMPLE_OTHER_STRING_FIELD],
         "",
         undefined,
-        ["@@id(fields: [title, author])", "@@createdAt", "@@updatedAt"]
+        "@@id(fields: [title, author]) @@createdAt @@updatedAt"
       ),
       `model ${EXAMPLE_MODEL_NAME} {
 ${printField(EXAMPLE_STRING_FIELD, POSTGRES_SQL_PROVIDER)}
@@ -507,13 +478,13 @@ ${printField(EXAMPLE_OTHER_STRING_FIELD, POSTGRES_SQL_PROVIDER)}
   });
   test("Throws error when a model attribute doesn't start with '@@'", () => {
     expect(() =>
-      createModel(EXAMPLE_MODEL_NAME, [EXAMPLE_STRING_FIELD], "", undefined, [
-        " @@id(fields: [title, author])",
-        "@@createdAt",
-        " @updatedAt",
-        "invalid",
-        "\n\ninvalid2",
-      ])
+      createModel(
+        EXAMPLE_MODEL_NAME,
+        [EXAMPLE_STRING_FIELD],
+        "",
+        undefined,
+        " @@id(fields: [title, author]) @@createdAt @updatedAt invalid\n\ninvalid2"
+      )
     ).toThrow(
       `Invalid model ${EXAMPLE_MODEL_NAME} attribute: all model attributes must start with @@.`
     );
