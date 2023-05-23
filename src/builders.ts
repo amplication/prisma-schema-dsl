@@ -23,11 +23,11 @@ const NAME_REGEXP = /[A-Za-z][A-Za-z0-9_]*/;
 export const OPTIONAL_LIST_ERROR_MESSAGE =
   "Invalid modifiers: You cannot combine isRequired: false and isList: true - optional lists are not supported.";
 
-export const INVALID_MODEL_ATTRIBUTES_ERROR_MESSAGE =
-  "Invalid model attribute: all model attributes must start with @@.";
+export const INVALID_MODEL_ATTRIBUTES_ERROR_MESSAGE = (name: string) =>
+  `Invalid model ${name} attribute: all model attributes must start with @@.`;
 
-export const INVALID_FIELD_ATTRIBUTES_ERROR_MESSAGE =
-  "Invalid field attribute: all field attributes must start with @.";
+export const INVALID_FIELD_ATTRIBUTES_ERROR_MESSAGE = (name: string) =>
+  `Invalid field ${name} attribute: all field attributes must start with @.`;
 
 /** Creates a schema AST object */
 export function createSchema(
@@ -67,7 +67,10 @@ export function createModel(
   attributes?: string | string[]
 ): Model {
   validateName(name);
-  const preparedAttributes = validateAndPrepareModelAttributes(attributes);
+  const preparedAttributes = validateAndPrepareModelAttributes(
+    name,
+    attributes
+  );
   return {
     name,
     fields,
@@ -97,7 +100,10 @@ export function createScalarField(
   validateName(name);
   validateScalarDefault(type, defaultValue);
   validateModifiers(isRequired, isList);
-  const preparedAttributes = validateAndPrepareFieldAttributes(attributes);
+  const preparedAttributes = validateAndPrepareFieldAttributes(
+    name,
+    attributes
+  );
   return {
     name,
     isList,
@@ -202,7 +208,10 @@ export function createObjectField(
 ): ObjectField {
   validateName(name);
   validateModifiers(isRequired, isList);
-  const preparedAttributes = validateAndPrepareFieldAttributes(attributes);
+  const preparedAttributes = validateAndPrepareFieldAttributes(
+    name,
+    attributes
+  );
 
   return {
     name,
@@ -236,7 +245,8 @@ function validateModifiers(isRequired: boolean, isList: boolean): void {
 
 function validateAndPrepareAttributesPrefix(
   attributePrefix: string,
-  invalidErrorMessage: string,
+  invalidErrorMessage: (name: string) => string,
+  name: string,
   attributes?: string | string[]
 ): string[] | null {
   if (!attributes) {
@@ -244,46 +254,61 @@ function validateAndPrepareAttributesPrefix(
   }
 
   if (typeof attributes === "string") {
-    // split by new lines or empty strings first
-    attributes = attributes.split(/\s+/);
-    // flatten the array and split each string by attributePrefix only if it contains attributePrefix
-    attributes = attributes.flatMap((attribute) =>
-      attribute.includes(attributePrefix)
-        ? attribute
-            .split(attributePrefix)
-            .filter(Boolean) // Remove empty strings
-            .map((attr) => attributePrefix + attr.trim())
-        : attribute.trim()
+    // clean up new lines
+    attributes = attributes.replace(/\n/g, " ");
+    // split by attributePrefix
+    attributes = attributes.split(attributePrefix);
+    // remove empty strings
+    attributes = attributes.filter(Boolean);
+    // remove trailing and leading spaces
+    attributes = attributes.map((attribute) =>
+      attribute.replace(/\n/g, " ").trim()
+    );
+    // add back attributePrefix
+    attributes = attributes.map(
+      (attribute) => attributePrefix + attribute.trim()
     );
   }
 
-  // Check if it's an array and if all attributes start with the prefix
+  if (Array.isArray(attributes)) {
+    attributes.forEach((attribute) => attribute.trim());
+  }
+
+  // Check if it's an array and if all attributes start with the prefix and that it's not only the prefix
   if (
     !Array.isArray(attributes) ||
-    !attributes.every((attribute) => attribute.startsWith(attributePrefix))
+    !attributes.every(
+      (attribute) =>
+        attribute.trim().startsWith(attributePrefix) &&
+        attribute.length > attributePrefix.length
+    )
   ) {
-    throw new Error(invalidErrorMessage);
+    throw new Error(invalidErrorMessage(name));
   }
 
   return attributes;
 }
 
 function validateAndPrepareModelAttributes(
+  name: string,
   attributes?: string | string[]
 ): string[] | null {
   return validateAndPrepareAttributesPrefix(
     "@@",
     INVALID_MODEL_ATTRIBUTES_ERROR_MESSAGE,
+    name,
     attributes
   );
 }
 
 function validateAndPrepareFieldAttributes(
+  name: string,
   attributes?: string | string[]
 ): string[] | null {
   return validateAndPrepareAttributesPrefix(
     "@",
     INVALID_FIELD_ATTRIBUTES_ERROR_MESSAGE,
+    name,
     attributes
   );
 }
