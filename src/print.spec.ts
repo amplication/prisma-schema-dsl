@@ -145,6 +145,23 @@ describe("printField", () => {
       `${EXAMPLE_FIELD_NAME} ${ScalarType.Float} ${EXAMPLE_FIELD_ATTRIBUTES}`,
     ],
     [
+      "Simple decimal field",
+      createScalarField(
+        EXAMPLE_FIELD_NAME,
+        ScalarType.Decimal,
+        false,
+        true,
+        false,
+        false,
+        false,
+        null,
+        undefined,
+        false,
+        EXAMPLE_FIELD_ATTRIBUTES
+      ),
+      `${EXAMPLE_FIELD_NAME} ${ScalarType.Decimal} ${EXAMPLE_FIELD_ATTRIBUTES}`,
+    ],
+    [
       "Simple optional string field",
       createScalarField(
         EXAMPLE_FIELD_NAME,
@@ -213,6 +230,23 @@ describe("printField", () => {
       `${EXAMPLE_FIELD_NAME} ${ScalarType.Int} @default(42) ${EXAMPLE_FIELD_ATTRIBUTES}`,
     ],
     [
+      "BigInt field with default",
+      createScalarField(
+        EXAMPLE_FIELD_NAME,
+        ScalarType.BigInt,
+        false,
+        true,
+        false,
+        false,
+        false,
+        Number.MAX_SAFE_INTEGER,
+        undefined,
+        false,
+        EXAMPLE_FIELD_ATTRIBUTES
+      ),
+      `${EXAMPLE_FIELD_NAME} ${ScalarType.BigInt} @default(${Number.MAX_SAFE_INTEGER}) ${EXAMPLE_FIELD_ATTRIBUTES}`,
+    ],
+    [
       "Int field with autoincrement()",
       createScalarField(
         EXAMPLE_FIELD_NAME,
@@ -228,6 +262,23 @@ describe("printField", () => {
         EXAMPLE_FIELD_ATTRIBUTES
       ),
       `${EXAMPLE_FIELD_NAME} ${ScalarType.Int} @default(autoincrement()) ${EXAMPLE_FIELD_ATTRIBUTES}`,
+    ],
+    [
+      "BigInt field with autoincrement()",
+      createScalarField(
+        EXAMPLE_FIELD_NAME,
+        ScalarType.BigInt,
+        false,
+        true,
+        false,
+        false,
+        false,
+        { callee: AUTO_INCREMENT },
+        undefined,
+        false,
+        EXAMPLE_FIELD_ATTRIBUTES
+      ),
+      `${EXAMPLE_FIELD_NAME} ${ScalarType.BigInt} @default(autoincrement()) ${EXAMPLE_FIELD_ATTRIBUTES}`,
     ],
     [
       "String field with uuid()",
