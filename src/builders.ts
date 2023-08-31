@@ -145,7 +145,8 @@ function validateScalarDefault(type: ScalarType, value: ScalarFieldDefault) {
       }
       return;
     }
-    case ScalarType.Int: {
+    case ScalarType.Int:
+    case ScalarType.BigInt: {
       if (
         !(
           typeof value === "number" ||
@@ -158,7 +159,8 @@ function validateScalarDefault(type: ScalarType, value: ScalarFieldDefault) {
       }
       return;
     }
-    case ScalarType.Float: {
+    case ScalarType.Float:
+    case ScalarType.Decimal: {
       if (!(typeof value == "number")) {
         throw new Error("Default must be a number");
       }
