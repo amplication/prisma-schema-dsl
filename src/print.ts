@@ -176,14 +176,14 @@ function printScalarField(
 
   if (field.isId) {
     if (isMongoDBProvider) {
-      attributes.push(`@id @map("_id") @mongo.ObjectId`);
+      attributes.push(`@id @map("_id") @db.ObjectId`);
     } else {
       attributes.push("@id");
     }
   }
 
   if (isMongoDBProvider && field.isForeignKey) {
-    attributes.push("@mongo.ObjectId");
+    attributes.push("@db.ObjectId");
   }
 
   if (field.isUnique) {
