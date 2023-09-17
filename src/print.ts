@@ -174,7 +174,7 @@ function printScalarField(
   const attributes: string[] = [];
   const isMongoDBProvider = provider === DataSourceProvider.MongoDB;
 
-  if (field.isId) {
+  if (!fieldHasAttribute(field, "@id") && field.isId) {
     if (isMongoDBProvider) {
       attributes.push(`@id @map("_id") @db.ObjectId`);
     } else {
@@ -192,7 +192,7 @@ function printScalarField(
   if (field.isUpdatedAt) {
     attributes.push("@updatedAt");
   }
-  if (field.default) {
+  if (!fieldHasAttribute(field, "@default") && field.default) {
     if (!isMongoDBProvider || !field.isId) {
       attributes.push(`@default(${printScalarDefault(field.default)})`);
     }
@@ -207,6 +207,15 @@ function printScalarField(
   const attributesText = attributes.join(" ");
   return [field.name, typeText, attributesText].filter(Boolean).join(" ");
 }
+
+function fieldHasAttribute(field: ScalarField, attributeName: string): boolean {
+  return (
+    field.attributes?.some((attribute) =>
+      attribute.startsWith(attributeName)
+    ) ?? false
+  );
+}
+
 function printScalarDefault(value: ScalarFieldDefault): string {
   // String, JSON and DateTime
   if (typeof value === "string") {
