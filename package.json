@@ -1,6 +1,6 @@
 {
   "name": "prisma-schema-dsl",
-  "version": "2.1.6",
+  "version": "2.2.0",
   "description": "JavaScript interface for Prisma Schema DSL",
   "main": "dist/index.js",
   "scripts": {
@@ -18,9 +18,6 @@
     "ast",
     "generator"
   ],
-  "author": {
-    "name": "Iddan Aaronsohn"
-  },
   "license": "MIT",
   "dependencies": {
     "@prisma/internals": "^4.6.1",

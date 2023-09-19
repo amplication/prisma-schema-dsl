@@ -433,6 +433,74 @@ describe("printField", () => {
       ),
       `${EXAMPLE_FIELD_NAME} ${EXAMPLE_OBJECT_NAME} @relation(name: "${EXAMPLE_RELATION_NAME}", fields: [${EXAMPLE_RELATION_FIELD_NAME}], references: [${EXAMPLE_RELATION_REFERENCE_FIELD_NAME}]) ${EXAMPLE_FIELD_ATTRIBUTES}`,
     ],
+    [
+      "ID field",
+      createScalarField(
+        EXAMPLE_FIELD_NAME,
+        ScalarType.String,
+        false,
+        true,
+        false,
+        true,
+        false,
+        { callee: UUID },
+        undefined,
+        false,
+        EXAMPLE_FIELD_ATTRIBUTES
+      ),
+      `${EXAMPLE_FIELD_NAME} ${ScalarType.String} @id @default(uuid()) ${EXAMPLE_FIELD_ATTRIBUTES}`,
+    ],
+    [
+      "ID field with @id override",
+      createScalarField(
+        EXAMPLE_FIELD_NAME,
+        ScalarType.String,
+        false,
+        true,
+        false,
+        true,
+        false,
+        { callee: UUID },
+        undefined,
+        false,
+        `@id(map: "PK_dd4f738d44")`
+      ),
+      `${EXAMPLE_FIELD_NAME} ${ScalarType.String} @default(uuid()) @id(map: "PK_dd4f738d44")`,
+    ],
+    [
+      "Int field with autoincrement() and @default attribute override",
+      createScalarField(
+        EXAMPLE_FIELD_NAME,
+        ScalarType.Int,
+        false,
+        true,
+        false,
+        false,
+        false,
+        { callee: AUTO_INCREMENT },
+        undefined,
+        false,
+        `@default(dbgenerated("uuid_generate_v4()"))`
+      ),
+      `${EXAMPLE_FIELD_NAME} ${ScalarType.Int} @default(dbgenerated("uuid_generate_v4()"))`,
+    ],
+    [
+      "String field with default cuid() and override @default() attribute",
+      createScalarField(
+        EXAMPLE_FIELD_NAME,
+        ScalarType.String,
+        false,
+        true,
+        false,
+        false,
+        false,
+        { callee: CUID },
+        undefined,
+        false,
+        `@default(dbgenerated("uuid_generate_v4()"))`
+      ),
+      `${EXAMPLE_FIELD_NAME} ${ScalarType.String} @default(dbgenerated("uuid_generate_v4()"))`,
+    ],
   ];
   test.each(cases)("%s", (name, field, expected) => {
     expect(printField(field, POSTGRES_SQL_PROVIDER)).toBe(expected);
