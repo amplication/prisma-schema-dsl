@@ -44,7 +44,7 @@ npm run prepare    # build step wired into npm lifecycle (runs tsc)
   - Model attributes must start with `@@`, field attributes with `@`.
   - Scalar defaults must align with their `ScalarType` (e.g., `uuid()/cuid()` for `String`, `autoincrement()` for `Int`/`BigInt`).
 - **Formatting:** Prettier governs source formatting; Prisma output is normalized by `formatSchema` within `print()`.
-- **TypeScript settings:** `strict: true`, declaration output, incremental builds, and `esModuleInterop` are required—do not relax without discussion.
+- **TypeScript settings:** `strict: true`, declaration output, incremental builds, and `esModuleInterop` are required—do not relax without discussion; additionally keep `target: "es3"` for compatibility and `baseUrl: "./src"` for module resolution.
 
 ## 🤖 CI & Automation
 - **Workflow:** `.github/workflows/nodejs.yaml` runs on pushes/PRs to `master`.
