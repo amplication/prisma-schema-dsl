@@ -17,7 +17,7 @@
 | `readme.md` | Public overview, installation instructions, and API surface summary for builders/print helpers.
 
 ## 🛠️ Tooling & Commands
-Use npm@7 as noted in `readme.md` before installing dependencies.
+Use npm@7 as noted in `readme.md` before installing dependencies. Formatting relies on Prisma's `formatSchema` implementation provided by the `@prisma/internals` package in addition to Prettier, Jest/ts-jest, and `prisma-schema-dsl-types`.
 
 ```bash
 npm install        # install dependencies after cloning
@@ -43,7 +43,7 @@ npm run prepare    # build step wired into npm lifecycle (runs tsc)
   - Optional list fields are forbidden (`OPTIONAL_LIST_ERROR_MESSAGE`).
   - Model attributes must start with `@@`, field attributes with `@`.
   - Scalar defaults must align with their `ScalarType` (e.g., `uuid()/cuid()` for `String`, `autoincrement()` for `Int`/`BigInt`).
-- **Formatting:** Prettier governs source formatting; Prisma output is normalized by `formatSchema` within `print()`.
+- **Formatting:** Prettier governs source formatting; Prisma output is normalized by the `@prisma/internals` `formatSchema` helper within `print()`.
 - **TypeScript settings:** `strict: true`, declaration output, incremental builds, and `esModuleInterop` are required—do not relax without discussion; additionally keep `target: "es3"` for compatibility and `baseUrl: "./src"` for module resolution.
 
 ## 🤖 CI & Automation
@@ -62,7 +62,7 @@ npm run prepare    # build step wired into npm lifecycle (runs tsc)
 - **Builder invariants:** Always call `validateName`, `validateModifiers`, and attribute prefix helpers when introducing new builder APIs. Reuse exported error messages so tests remain meaningful.
 - **Attributes handling:** Accept both arrays and strings; normalize to arrays with trimmed `@`/`@@` prefixes (see `validateAndPrepareAttributesPrefix`).
 - **Printer expectations:**
-  - Always route final schema text through `formatSchema` to match Prisma formatting.
+  - Always route final schema text through `@prisma/internals`'s `formatSchema` to match Prisma formatting.
   - Respect MongoDB-specific behaviors (ObjectId mapping, foreign key annotation) in `printScalarField`.
   - Use helper functions (`withDocumentation`, `printRelation`, etc.) instead of duplicating string construction.
 - **Type safety:** Maintain shared types from `prisma-schema-dsl-types`. When new AST shapes are needed, update builders and printer consistently.
