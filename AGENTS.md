@@ -17,7 +17,7 @@
 | `readme.md` | Public overview, installation instructions, and API surface summary for builders/print helpers.
 
 ## 🛠️ Tooling & Commands
-Use npm@7 as noted in `readme.md` before installing dependencies. Formatting relies on Prisma's `formatSchema` implementation provided by the `@prisma/internals` package in addition to Prettier, Jest/ts-jest, and `prisma-schema-dsl-types`.
+Use npm@7 as noted in `readme.md` before installing dependencies. Formatting relies on Prisma's `formatSchema` implementation provided by the `@prisma/internals` package in addition to Prettier, Jest/ts-jest, `prisma-schema-dsl-types`, and the `lodash.isempty` runtime helper that `src/print.ts` uses for relation/field empty checks.
 
 ```bash
 npm install        # install dependencies after cloning
@@ -65,6 +65,7 @@ npm run prepare    # build step wired into npm lifecycle (runs tsc)
   - Always route final schema text through `@prisma/internals`'s `formatSchema` to match Prisma formatting.
   - Respect MongoDB-specific behaviors (ObjectId mapping, foreign key annotation) in `printScalarField`.
   - Use helper functions (`withDocumentation`, `printRelation`, etc.) instead of duplicating string construction.
+  - Keep the `lodash.isempty` checks that guard relation and field serialization in sync with dependency declarations/tests—do not remove or replace them without updating the runtime dependency list and specs.
 - **Type safety:** Maintain shared types from `prisma-schema-dsl-types`. When new AST shapes are needed, update builders and printer consistently.
 - **Docs/testing parity:** Whenever API contracts change, update `readme.md` and associated specs.
 
