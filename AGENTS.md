@@ -2,7 +2,7 @@
 
 ## 🚀 Project Overview
 - **Repository:** `amplication/prisma-schema-dsl`
-- **Purpose:** Provide a TypeScript/Node.js interface for constructing Prisma schema ASTs via strongly validated builders (`src/builders.ts`) and for printing those ASTs into formatted `.prisma` files (`src/print.ts`).
+- **Purpose:** Provide a TypeScript/Node.js interface for constructing Prisma schema ASTs via strongly validated builders (`src/builders.ts`) and for printing those ASTs into formatted `.prisma` files (`src/print.ts`), where the printer orchestrates datasources, generators, models, and enums before passing the composed AST to Prisma’s `formatSchema`.
 - **Primary consumers:** Tooling and code generators that need to author Prisma schemas programmatically while benefiting from Prisma's `formatSchema` output.
 - **Language & runtime:** TypeScript compiled to CommonJS (`tsconfig.json`) targeting Node.js (CI uses Node 12.x).
 
@@ -37,7 +37,7 @@ npm run prepare    # build step wired into npm lifecycle (runs tsc)
 6. **Review:** Validate changes against README/API expectations and ensure Prisma schemas printed by `print()` remain formatted via `@prisma/internals` `formatSchema` helper.
 
 ## ✅ Testing & Quality Expectations
-- **Testing framework:** Jest configured via `ts-jest` (see `package.json`). Specs import builders/printer to verify serialization, validation errors, and Prisma-specific behaviors (e.g., MongoDB ObjectId mappings, relation attributes).
+- **Testing framework:** Jest configured via `ts-jest` (see `package.json`). Specs import builders/printer to verify serialization, validation errors, and Prisma-specific behaviors (e.g., MongoDB ObjectId mappings, relation attributes), with `src/print.spec.ts` explicitly asserting ObjectId injections on `_id` fields so contributors don’t regress MongoDB handling.
 - **Validation rules enforced in code:**
   - Names must match `/[A-Za-z][A-Za-z0-9_]*/` (`validateName`).
   - Optional list fields are forbidden (`OPTIONAL_LIST_ERROR_MESSAGE`).
@@ -63,7 +63,7 @@ npm run prepare    # build step wired into npm lifecycle (runs tsc)
 - **Attributes handling:** Accept both arrays and strings; normalize to arrays with trimmed `@`/`@@` prefixes (see `validateAndPrepareAttributesPrefix`).
 - **Printer expectations:**
   - Always route final schema text through `@prisma/internals`'s `formatSchema` to match Prisma formatting.
-  - Respect MongoDB-specific behaviors (ObjectId mapping, foreign key annotation) in `printScalarField`.
+  - Respect MongoDB-specific behaviors (ObjectId mapping, foreign key annotation) in `printScalarField`; when the datasource provider is MongoDB, ensure helpers inject `@db.ObjectId`, `@map("_id")`, and `@default(auto())` (or equivalent) on `_id` fields before formatting so the printed schema aligns with runtime expectations.
   - Use helper functions (`withDocumentation`, `printRelation`, etc.) instead of duplicating string construction.
   - Keep the `lodash.isempty` checks that guard relation and field serialization in sync with dependency declarations/tests—do not remove or replace them without updating the runtime dependency list and specs.
 - **Type safety:** Maintain shared types from `prisma-schema-dsl-types`. When new AST shapes are needed, update builders and printer consistently.
