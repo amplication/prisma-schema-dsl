@@ -11,7 +11,7 @@
 | --- | --- |
 | `src/` | Runtime source and colocated Jest specs. Includes `builders.ts`, `print.ts`, `index.ts`, and their `*.spec.ts` files.
 | `assets/hero.png` | Branding image referenced in the README badge section.
-| `.github/workflows/nodejs.yaml` | GitHub Actions pipeline that runs install → lint/format check → tests → build.
+| `.github/workflows/nodejs.yaml` | GitHub Actions pipeline that runs install → format check → tests → build.
 | `package.json` / `package-lock.json` | npm metadata plus script definitions (`build`, `test`, `format`, `check-format`, `prepare`).
 | `tsconfig.json` | Strict TypeScript compiler configuration emitting declarations to `dist/` with incremental builds enabled.
 | `readme.md` | Public overview, installation instructions, and API surface summary for builders/print helpers.
@@ -31,7 +31,7 @@ npm run prepare    # build step wired into npm lifecycle (runs tsc)
 ## 🔁 Development Workflow
 1. **Bootstrap:** Clone, ensure `npm@7`, then `npm install`.
 2. **Implement:** Update TypeScript files under `src/`. Keep builders/printer logic cohesive and colocate new tests next to implementations.
-3. **Format & Lint:** Run `npm run check-format` (or `npm run format` when applying fixes). Prettier only targets `src/`.
+3. **Format:** Run `npm run check-format` (or `npm run format` when applying fixes). Prettier only targets `src/`.
 4. **Test:** Execute `npm test` to run ts-jest suites (`builders.spec.ts`, `print.spec.ts`). Tests rely on runtime validation behavior; keep them deterministic.
 5. **Build:** `npm run build` must succeed to generate `dist/` artifacts and type declarations. CI and `npm run prepare` depend on it.
 6. **Review:** Validate changes against README/API expectations and ensure Prisma schemas printed by `print()` remain formatted via `@prisma/internals` `formatSchema` helper.
@@ -63,7 +63,7 @@ npm run prepare    # build step wired into npm lifecycle (runs tsc)
 - **Attributes handling:** Accept both arrays and strings; normalize to arrays with trimmed `@`/`@@` prefixes (see `validateAndPrepareAttributesPrefix`).
 - **Printer expectations:**
   - Always route final schema text through `@prisma/internals`'s `formatSchema` to match Prisma formatting.
-  - Respect MongoDB-specific behaviors (ObjectId mapping, foreign key annotation) in `printScalarField`; when the datasource provider is MongoDB, ensure helpers inject `@db.ObjectId`, `@map("_id")`, and `@default(auto())` (or equivalent) on `_id` fields before formatting so the printed schema aligns with runtime expectations.
+  - Respect MongoDB-specific behaviors (ObjectId mapping, foreign key annotation) in `printScalarField`; when the datasource provider is MongoDB, `_id` fields are emitted with `@id @map("_id") @db.ObjectId`, foreign-key scalar fields add `@db.ObjectId`, and if a default is provided without an explicit `@default(...)`, the printer emits `@default(auto())` for `_id` fields.
   - Use helper functions (`withDocumentation`, `printRelation`, `printFieldModifiers`, etc.) instead of duplicating string construction.
   - Keep the `lodash.isempty` checks that guard relation and field serialization in sync with dependency declarations/tests—do not remove or replace them without updating the runtime dependency list and specs.
 - **Type safety:** Maintain shared types from `prisma-schema-dsl-types`. When new AST shapes are needed, update builders and printer consistently.
