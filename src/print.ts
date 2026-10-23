@@ -192,7 +192,11 @@ function printScalarField(
   if (field.isUpdatedAt) {
     attributes.push("@updatedAt");
   }
-  if (!fieldHasAttribute(field, "@default") && field.default) {
+  if (
+    !fieldHasAttribute(field, "@default") &&
+    field.default !== null &&
+    field.default !== undefined
+  ) {
     if (!isMongoDBProvider || !field.isId) {
       attributes.push(`@default(${printScalarDefault(field.default)})`);
     }

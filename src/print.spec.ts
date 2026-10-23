@@ -230,6 +230,34 @@ describe("printField", () => {
       `${EXAMPLE_FIELD_NAME} ${ScalarType.Int} @default(42) ${EXAMPLE_FIELD_ATTRIBUTES}`,
     ],
     [
+      "Boolean field with false default",
+      createScalarField(
+        "isEnabled",
+        ScalarType.Boolean,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false
+      ),
+      `isEnabled ${ScalarType.Boolean} @default(false)`,
+    ],
+    [
+      "Int field with zero default",
+      createScalarField(
+        "zero",
+        ScalarType.Int,
+        false,
+        true,
+        false,
+        false,
+        false,
+        0
+      ),
+      `zero ${ScalarType.Int} @default(0)`,
+    ],
+    [
       "BigInt field with default",
       createScalarField(
         EXAMPLE_FIELD_NAME,
